@@ -1,0 +1,1426 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>語文探索基地 - 中二單元七 秦陵兵馬俑 字詞</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
+    <style>
+        body {
+            font-family: 'PingFang TC', 'Heiti TC', 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
+            background-color: #f8fafc; 
+            transition: background-color 0.5s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .kaishu { font-family: 'KaiTi', 'BiauKai', 'DFKai-SB', 'STKaiti', serif; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* 動畫集 */
+        @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        .pop { animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-4px); } 40% { transform: translateX(4px); } 60% { transform: translateX(-2px); } 80% { transform: translateX(2px); } }
+        .shake { animation: shake 0.4s ease-in-out; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in-up { animation: fadeInUp 0.5s ease-out forwards; }
+        
+        /* 積木與標籤 */
+        .lego-block { box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), inset 0 -3px 0 rgba(0,0,0,0.1); border-radius: 8px; position: relative; }
+        .badge-element { display: inline-flex; align-items: center; justify-content: center; padding: 0.35rem 1rem; border-radius: 8px; font-weight: 900; letter-spacing: 0.05em; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .badge-yin { background-color: #f1f5f9; color: #475569; border: 2px solid #cbd5e1; } 
+        .badge-xing { background-color: #e0e7ff; color: #4338ca; border: 2px solid #a5b4fc; } 
+        .badge-yi { background-color: #ecfdf5; color: #15803d; border: 2px solid #86efac; } 
+        
+        .strikethrough-red { text-decoration: line-through; text-decoration-color: #ef4444; text-decoration-thickness: 3px; }
+
+        /* 雙胞胎字按鈕 */
+        .twin-btn { transition: all 0.2s; aspect-ratio: 1/1; }
+        .twin-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 12px -2px rgba(0, 0, 0, 0.1); }
+        .twin-btn.correct { border-color: #22c55e !important; color: #166534; pointer-events: none; }
+        .twin-btn.wrong { border-color: #f43f5e !important; color: #9f1239; opacity: 0.5;}
+
+        /* 部首選項按鈕 */
+        .radical-opt-btn { transition: all 0.2s; }
+        .radical-opt-btn.correct { border-color: #22c55e !important; background-color: #dcfce7 !important; color: #166534; font-weight: 900; pointer-events: none; transform: scale(1.05); box-shadow: 0 4px 6px -1px rgba(34, 197, 94, 0.3); }
+
+        /* 拆字顯示區 */
+        .component-block { background-color: #e0e7ff; color: #312e81; font-family: 'KaiTi', serif; font-weight: bold; border-radius: 8px; padding: 0.5rem 1.2rem; box-shadow: 0 3px 5px rgba(0,0,0,0.05), inset 0 -2px 0 rgba(67, 56, 202, 0.1); }
+
+        /* 重組句子區塊樣式 (Drag & Drop) */
+        .word-block { cursor: grab; user-select: none; transition: all 0.2s; touch-action: manipulation; }
+        @media (hover: hover) { .word-block:hover { transform: translateY(-2px); } }
+        .word-block:active { cursor: grabbing; transform: scale(0.95); }
+        .slot-box.drag-over { background-color: #e0e7ff; border-color: #6366f1; }
+        
+        .tts-btn { transition: transform 0.2s, background-color 0.2s; }
+        .tts-btn:active { transform: scale(0.9); }
+    </style>
+</head>
+<body class="text-slate-800 flex flex-col h-[100dvh] overflow-hidden" onclick="window.initAudio()">
+
+    <!-- 頂部橫向導覽列 -->
+    <div class="w-full bg-white shadow-md flex flex-col z-20 flex-shrink-0">
+        <!-- Header -->
+        <div class="p-3 lg:p-4 bg-indigo-600 text-white flex justify-between items-center w-full">
+            <h1 class="text-base lg:text-2xl font-bold tracking-wider flex items-center gap-2">
+                <span>🚀 語文探索基地</span>
+                <span class="hidden lg:inline text-indigo-300">|</span>
+                <span class="text-sm lg:text-xl text-indigo-100">中二單元七 秦陵兵馬俑</span>
+            </h1>
+            <div class="flex gap-4 items-center">
+                <button onclick="window.openSubmitModal()" class="hidden md:flex bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-1.5 rounded-lg font-bold shadow-sm transition-colors items-center gap-2 text-sm lg:text-base">
+                    📥 遞交成績
+                </button>
+                <button id="sound-toggle" onclick="window.toggleSound(event)" class="text-2xl hover:scale-110 transition-transform focus:outline-none" title="音效開關">🔊</button>
+            </div>
+        </div>
+        
+        <!-- 難度篩選器 (星星) -->
+        <div class="flex gap-2 lg:gap-4 p-2 bg-slate-100 text-sm font-bold border-b border-slate-200 justify-center overflow-x-auto whitespace-nowrap">
+            <button onclick="window.filterDifficulty('all', this)" class="diff-btn px-6 py-2 rounded-lg text-indigo-900 bg-indigo-200 shadow-sm border border-indigo-300 transition-all">全部</button>
+            <button onclick="window.filterDifficulty(1, this)" class="diff-btn px-6 py-2 rounded-lg text-slate-500 hover:bg-slate-200 border border-transparent transition-all">⭐</button>
+            <button onclick="window.filterDifficulty(2, this)" class="diff-btn px-6 py-2 rounded-lg text-slate-500 hover:bg-slate-200 border border-transparent transition-all">⭐⭐</button>
+            <button onclick="window.filterDifficulty(3, this)" class="diff-btn px-6 py-2 rounded-lg text-slate-500 hover:bg-slate-200 border border-transparent transition-all">⭐⭐⭐</button>
+        </div>
+
+        <!-- 橫向詞語列表 -->
+        <ul id="word-list" class="flex overflow-x-auto no-scrollbar p-3 gap-3 bg-white border-b border-slate-200">
+            <!-- JS 動態生成 -->
+        </ul>
+    </div>
+
+    <!-- 下方主內容區 -->
+    <div class="flex-1 overflow-y-auto p-4 md:p-8 lg:p-10 flex flex-col items-center relative pb-32 scroll-smooth" id="main-content">
+        
+        <!-- 頂部：星星分數與遞交按鈕 -->
+        <div class="w-full max-w-6xl flex justify-between items-center mb-6 mx-auto">
+            <div class="bg-amber-100 border-2 border-amber-300 rounded-xl px-4 py-2 shadow-sm flex items-center gap-2 md:gap-3">
+                <span class="text-xl md:text-2xl">⭐</span>
+                <span class="font-bold text-amber-800 text-base md:text-lg whitespace-nowrap">學習點數：<span id="score-display" class="text-xl md:text-2xl ml-1 font-black text-amber-600">0</span> <span class="text-amber-700/70 text-sm md:text-base">/ <span id="max-score-display">0</span></span></span>
+            </div>
+            
+            <div class="flex gap-4 items-center">
+                <div id="combo-badge" class="hidden font-black text-white bg-gradient-to-r from-rose-500 to-orange-500 px-5 py-2 rounded-xl shadow-md transform rotate-2 z-50 text-lg border-2 border-white">
+                    🔥 <span id="combo-count">2</span> 連擊！
+                </div>
+                <!-- 手機版遞交按鈕 -->
+                <button onclick="window.openSubmitModal()" class="md:hidden bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-xl font-bold shadow-md transition-colors flex items-center gap-2">
+                    📥 遞交
+                </button>
+            </div>
+        </div>
+
+        <!-- 階段一：情境引入 -->
+        <div id="intro-section" class="w-full max-w-4xl mx-auto mt-4 flex flex-col items-center justify-center fade-in-up">
+            <div class="bg-white border-2 border-slate-200 rounded-3xl p-6 md:p-12 shadow-xl w-full flex flex-col items-center text-center relative">
+                <span class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-indigo-600 text-white px-6 py-2 rounded-b-xl rounded-t-none font-bold tracking-widest shadow-md whitespace-nowrap">情境解密</span>
+                <div id="intro-visual" class="text-7xl md:text-8xl my-6 flex gap-2 justify-center flex-wrap"></div>
+                <div class="bg-slate-50 px-6 md:px-8 py-6 rounded-2xl mb-6 w-full border border-slate-200 flex items-center justify-center" id="intro-context"></div>
+                <div id="intro-question" class="text-lg md:text-xl font-bold text-indigo-800 mb-8 w-full max-w-2xl mx-auto bg-indigo-50 px-6 py-4 rounded-xl border border-indigo-100"></div>
+                <button onclick="window.revealWord()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-lg md:text-xl font-bold py-4 px-8 md:px-12 rounded-xl shadow-lg transition-transform active:scale-95 flex items-center gap-3">
+                    🔍 揭曉答案並進入分析
+                </button>
+            </div>
+        </div>
+
+        <!-- 階段二：正式學習區 -->
+        <div id="learning-section" class="w-full flex flex-col items-center hidden fade-in-up max-w-6xl mx-auto gap-8 md:gap-12">
+            
+            <!-- 【字】 文字 -->
+            <div class="w-full flex flex-col items-center relative mt-6">
+                <div class="absolute -top-5 flex justify-center w-full z-10">
+                    <span class="badge-element badge-yin text-base shadow-sm">🔡 【字】結構觀察</span>
+                </div>
+                <div id="word-display" class="flex justify-center flex-wrap gap-4 md:gap-8 bg-white p-6 md:p-8 rounded-3xl border-2 border-slate-200 shadow-sm pt-12 w-full">
+                    <!-- JS 生成 -->
+                </div>
+            </div>
+
+            <!-- 【形】 筆順與防錯 -->
+            <div class="bg-white rounded-3xl shadow-md p-6 lg:p-10 flex flex-col xl:flex-row gap-8 w-full border-2 border-indigo-100 relative mt-4">
+                <div class="absolute -top-5 flex justify-center w-full z-10 left-0">
+                    <span class="badge-element badge-xing text-base shadow-sm">✍️ 【形】拆字與防錯</span>
+                </div>
+
+                <!-- 左側：筆順 -->
+                <div class="flex flex-col items-center w-full xl:w-[350px] pt-6">
+                    <div class="relative w-[240px] h-[240px] sm:w-[280px] sm:h-[280px] bg-slate-50 border-2 border-slate-300 rounded-xl overflow-hidden" id="canvas-container">
+                        <div class="absolute inset-0 pointer-events-none opacity-40">
+                            <div class="w-full h-full border-b-2 border-dashed border-slate-400 absolute top-1/2 -translate-y-1/2"></div>
+                            <div class="w-full h-full border-r-2 border-dashed border-slate-400 absolute left-1/2 -translate-x-1/2"></div>
+                        </div>
+                        <div id="character-canvas" class="absolute inset-0 z-10 cursor-pointer" style="touch-action: none;"></div>
+                    </div>
+                    <div class="mt-6 flex flex-col sm:flex-row gap-3 w-full max-w-[280px] sm:max-w-full">
+                        <button onclick="window.playAnimation()" class="flex-1 py-3 bg-slate-700 hover:bg-slate-800 text-white rounded-lg font-bold text-base md:text-lg transition-colors">▶️ 觀察筆順</button>
+                        <button onclick="window.startQuiz()" class="flex-1 py-3 bg-teal-600 hover:bg-teal-700 text-white rounded-lg font-bold text-base md:text-lg transition-colors flex justify-center items-center gap-2">✍️ 測驗 <span class="bg-amber-300 text-amber-900 px-2 py-0.5 rounded text-sm shadow-sm whitespace-nowrap">⭐ +2</span></button>
+                    </div>
+                </div>
+
+                <!-- 右側：部首與雙胞胎字 -->
+                <div class="flex-1 w-full flex flex-col gap-8 pt-6" id="right-info-panel">
+                    
+                    <!-- 部首解碼 -->
+                    <div class="flex flex-col gap-4">
+                        <div class="flex items-center justify-between flex-wrap gap-2">
+                            <h2 class="text-lg md:text-xl font-bold text-indigo-900 flex items-center gap-2">
+                                <span class="bg-indigo-500 text-white w-6 h-6 rounded flex items-center justify-center text-sm">1</span> 找部首解密碼
+                            </h2>
+                            <span class="bg-amber-300 text-amber-900 px-3 py-1 rounded-full font-bold text-sm shadow-sm">⭐ +2</span>
+                        </div>
+                        <div id="radical-options" class="flex gap-3 flex-wrap mb-2"></div>
+                        
+                        <!-- 拆字顯示區 -->
+                        <div class="w-full transition-all duration-300 opacity-0 hidden" id="components-section">
+                            <div class="bg-white rounded-2xl p-4 md:p-5 border border-slate-200 shadow-sm">
+                                <div id="info-components" class="flex items-center gap-3 mb-4 pb-4 border-b border-slate-100 flex-wrap">
+                                    <!-- 這裡會插入組件 -->
+                                </div>
+                                <div id="char-hint-box" class="text-slate-600 font-medium text-sm md:text-base flex gap-2">
+                                    <span>💡</span><span id="char-hint-text"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 雙胞胎字找不同 -->
+                    <div class="bg-[#fff6f5] rounded-3xl p-5 md:p-6 border border-rose-100 flex flex-col gap-4 hidden shadow-sm" id="twins-section">
+                        <div class="flex items-center justify-between flex-wrap gap-2">
+                            <h2 class="text-lg md:text-xl font-black text-rose-900 flex items-center gap-2"><span>👯</span> 雙胞胎字找不同</h2>
+                            <span class="bg-amber-300 text-amber-900 px-3 py-1 rounded-full font-bold text-sm shadow-sm">⭐ +3</span>
+                        </div>
+                        <p class="text-center font-bold text-rose-800/80 text-base md:text-lg mb-2">哪一個才是正確的字？</p>
+                        
+                        <div class="flex justify-center gap-6 md:gap-8" id="twin-buttons-container">
+                            <!-- JS 生成互動按鈕 -->
+                        </div>
+                        
+                        <div id="twin-explanation" class="hidden mt-4 bg-white rounded-2xl border border-rose-200 p-4 text-rose-900 font-bold text-sm md:text-base flex items-start md:items-center gap-3 shadow-sm mx-auto w-full max-w-md">
+                            <!-- 答對後顯示解釋 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 【義】 綜合區 -->
+            <div class="w-full flex flex-col gap-8 relative mt-4">
+                <div class="absolute -top-5 flex justify-center w-full z-10">
+                    <span class="badge-element badge-yi text-base shadow-sm">📖 【義】應用與實戰</span>
+                </div>
+                
+                <!-- 1. 詞語小辭典 & 秘笈 -->
+                <div class="bg-white border-2 border-teal-100 rounded-3xl shadow-md w-full pt-10 pb-6 px-5 lg:px-8 flex flex-col xl:flex-row gap-8">
+                    
+                    <!-- 辭典解釋 -->
+                    <div class="flex-1 flex flex-col gap-4">
+                        <div class="flex items-center gap-2 border-b-2 border-teal-100 pb-2 flex-wrap">
+                            <h2 class="text-xl md:text-2xl font-bold text-teal-900">📚 詞語小辭典</h2>
+                            <span id="word-english" class="bg-slate-100 text-slate-600 px-2 py-1 rounded-md text-xs md:text-sm font-bold ml-2 font-mono tracking-wider shadow-sm"></span>
+                        </div>
+                        <div id="word-explanation" class="text-lg md:text-xl text-slate-700 leading-relaxed font-medium mt-2"></div>
+                        
+                        <!-- ⚡ 思考挑戰 -->
+                        <div class="mt-auto bg-amber-50 border border-amber-200 p-4 rounded-xl flex flex-col gap-2 shadow-inner">
+                            <span class="text-amber-700 font-bold flex items-center gap-2"><span>⚡</span> 腦力激盪 (進階思考)</span>
+                            <span id="think-challenge" class="text-amber-900 font-medium text-base md:text-lg"></span>
+                        </div>
+                    </div>
+
+                    <!-- 詞語學習秘笈 -->
+                    <div class="flex-1 bg-slate-50 border border-slate-200 rounded-2xl p-5 md:p-6 flex flex-col gap-5">
+                        <div class="flex items-center justify-between">
+                            <h2 class="text-lg md:text-xl font-black text-slate-800 flex items-center gap-2"><span>🔮</span> 詞語學習秘笈</h2>
+                            <button onclick="window.playSecretGuideTTS(event)" class="tts-btn w-8 h-8 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center">🗣️</button>
+                        </div>
+
+                        <!-- 秘笈 1: 積木拼 -->
+                        <div>
+                            <h3 class="text-sm md:text-base font-bold text-indigo-700 mb-2 flex items-center gap-2"><span>🧩</span> 把字當積木拼</h3>
+                            <div class="bg-white p-3 rounded-lg border border-slate-200 flex items-center gap-2 text-lg md:text-xl font-bold flex-wrap" id="block-combine-display"></div>
+                        </div>
+
+                        <!-- 秘笈 2: 百搭公式 -->
+                        <div>
+                            <h3 class="text-sm md:text-base font-bold text-emerald-700 mb-2 flex items-center gap-2"><span>🧮</span> 百搭公式 (不會用錯)</h3>
+                            <div class="bg-emerald-50 p-3 rounded-lg border border-emerald-100 flex flex-col gap-2">
+                                <div class="text-base md:text-lg font-bold text-emerald-900 tracking-wide" id="formula-pattern"></div>
+                                <div class="text-xs md:text-sm text-emerald-800 bg-white py-1 px-2 rounded font-medium" id="formula-example"></div>
+                            </div>
+                        </div>
+
+                        <!-- 秘笈 3: 地雷區 -->
+                        <div>
+                            <h3 class="text-sm md:text-base font-bold text-rose-700 mb-2 flex items-center gap-2"><span>💥</span> 地雷區 (防錯)</h3>
+                            <div class="bg-white p-3 md:p-4 rounded-lg border border-rose-100 flex flex-col gap-2">
+                                <div class="flex items-center gap-2 text-base md:text-lg font-bold text-slate-400">
+                                    <span class="text-rose-500">❌</span><span id="minefield-wrong" class="strikethrough-red"></span>
+                                </div>
+                                <div class="bg-rose-50 p-2 rounded text-rose-800 font-medium text-xs md:text-sm">
+                                    ⚠️ <span id="minefield-reason"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. 語義小挑戰 -->
+                <div class="w-full bg-indigo-50 border border-indigo-100 rounded-3xl p-5 lg:p-8 shadow-md flex flex-col gap-6">
+                    <h2 class="text-xl md:text-2xl font-black text-indigo-900 flex items-center gap-2">🎯 語義小挑戰</h2>
+                    
+                    <div class="flex flex-col xl:flex-row gap-6 w-full">
+                        <!-- 挑戰 A: 近義詞 -->
+                        <div class="flex-1 bg-white rounded-2xl p-5 border border-slate-200 flex flex-col relative">
+                            <div class="flex justify-between items-start md:items-center mb-4 gap-2">
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <span class="bg-indigo-100 text-indigo-800 font-bold px-3 py-1 rounded-md text-sm whitespace-nowrap">🤝 找好朋友 (近義詞)</span>
+                                    <span class="bg-amber-300 text-amber-900 px-3 py-1 rounded-full font-bold text-sm shadow-sm whitespace-nowrap">⭐ +3</span>
+                                </div>
+                                <button onclick="window.speakText(document.getElementById('synonym-q').textContent, event)" class="tts-btn w-8 h-8 rounded-full bg-slate-100 text-slate-600 flex-shrink-0">🗣️</button>
+                            </div>
+                            <h3 class="text-lg md:text-xl font-bold text-slate-800 mb-5" id="synonym-q"></h3>
+                            <div class="flex flex-wrap gap-3 mt-auto" id="synonym-options"></div>
+                            <div id="synonym-msg" class="mt-3 text-center font-bold text-sm md:text-base opacity-0 transition-opacity"></div>
+                        </div>
+
+                        <!-- 挑戰 B: 情境選擇 (三選一) -->
+                        <div class="flex-1 bg-white rounded-2xl p-5 border border-slate-200 flex flex-col relative">
+                            <div class="flex justify-between items-start md:items-center mb-4 gap-2">
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <span class="bg-teal-100 text-teal-800 font-bold px-3 py-1 rounded-md text-sm flex items-center gap-1 whitespace-nowrap"><span class="text-base">📝</span> 觀察與應用</span>
+                                    <span class="bg-amber-300 text-amber-900 px-3 py-1 rounded-full font-bold text-sm shadow-sm whitespace-nowrap">⭐ +3</span>
+                                </div>
+                                <button onclick="window.speakText(document.getElementById('context-q').textContent, event)" class="tts-btn w-8 h-8 rounded-full bg-slate-100 text-slate-600 flex-shrink-0">🗣️</button>
+                            </div>
+                            <h3 class="text-lg md:text-xl font-bold text-slate-800 mb-4" id="context-q"></h3>
+                            <div class="flex flex-col gap-2 mt-auto" id="context-options"></div>
+                            <div id="context-msg" class="mt-3 text-center font-bold text-sm md:text-base opacity-0 transition-opacity"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. 造句與重組 -->
+                <div class="flex flex-col lg:flex-row gap-6 w-full">
+                    <!-- 用詞造句 -->
+                    <div class="flex-1 bg-white border border-slate-200 rounded-3xl p-5 lg:p-8 shadow-md flex flex-col">
+                        <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-2 flex-wrap gap-2">
+                            <h2 class="text-lg md:text-xl font-bold text-slate-800">✍️ 實戰造句填空</h2>
+                            <span class="bg-amber-300 text-amber-900 px-3 py-1 rounded-full font-bold text-sm shadow-sm">⭐ +5</span>
+                        </div>
+                        <div class="bg-slate-50 p-4 md:p-5 rounded-xl border border-slate-200 text-lg md:text-xl font-medium text-slate-700 leading-relaxed mb-6" id="fill-in-sentence-display"></div>
+                        <div class="flex flex-wrap gap-3 justify-center mt-auto" id="fill-in-options"></div>
+                        <div id="fill-in-msg" class="mt-4 text-center font-bold text-sm md:text-base opacity-0 transition-opacity"></div>
+                    </div>
+
+                    <!-- 句子重組 (方格拖拉互動版) -->
+                    <div class="flex-1 bg-white border border-slate-200 rounded-3xl p-5 lg:p-8 shadow-md flex flex-col relative">
+                        <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-2 flex-wrap gap-2">
+                            <div class="flex items-center gap-3">
+                                <h2 class="text-lg md:text-xl font-bold text-slate-800">🧩 邏輯句子重組</h2>
+                                <span class="bg-amber-300 text-amber-900 px-3 py-1 rounded-full font-bold text-sm shadow-sm">⭐ +5</span>
+                            </div>
+                            <button onclick="window.speakText(window.currentWordData.sentenceUnscramble.join(''), event)" class="tts-btn w-8 h-8 rounded-full bg-slate-100 text-slate-600 flex-shrink-0">🗣️</button>
+                        </div>
+                        
+                        <!-- 放字用的方格區 -->
+                        <div id="drop-zone" class="min-h-[80px] bg-white flex flex-wrap gap-2 mb-4 items-center justify-center py-2">
+                            <!-- JS 生成的方格 -->
+                        </div>
+
+                        <div class="text-center text-slate-400 text-xs font-bold mb-2">💡 電腦可拖拉，手機/平板請直接「點擊」下方詞語放入空格</div>
+
+                        <!-- 下方的詞語庫 -->
+                        <div id="word-pool" class="flex flex-wrap gap-2 justify-center mb-5 min-h-[50px]"></div>
+                        
+                        <div class="mt-auto flex justify-center gap-3">
+                            <button onclick="window.resetUnscramble()" class="px-4 py-2 bg-slate-200 text-slate-700 hover:bg-slate-300 rounded-lg font-bold text-sm transition-colors">重新排列</button>
+                            <button onclick="window.checkUnscramble()" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-bold text-sm md:text-base shadow-sm transition-colors">提交答案</button>
+                        </div>
+                        <div id="unscramble-msg" class="mt-3 text-center font-bold text-sm md:text-base opacity-0 transition-opacity min-h-[24px]"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- 遞交功課 Modal -->
+    <div id="submit-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm px-4">
+        <div class="bg-white rounded-3xl p-6 md:p-8 shadow-2xl w-full max-w-md transform transition-all relative">
+            <button onclick="window.closeSubmitModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
+            <h2 class="text-2xl font-black text-indigo-900 mb-6 text-center">📥 遞交學習成績</h2>
+            
+            <div class="flex flex-col gap-4">
+                <div>
+                    <label class="block text-slate-700 font-bold mb-1">功課標題</label>
+                    <input type="text" value="中二單元七 秦陵兵馬俑" disabled class="w-full bg-slate-100 border border-slate-200 text-slate-500 rounded-lg px-4 py-2 font-bold cursor-not-allowed">
+                </div>
+                <div class="flex gap-4">
+                    <div class="flex-1">
+                        <label class="block text-slate-700 font-bold mb-1">班別</label>
+                        <input type="text" id="student-class" placeholder="例: 2A" class="w-full bg-white border-2 border-indigo-200 focus:border-indigo-500 rounded-lg px-4 py-2 font-bold outline-none transition">
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-slate-700 font-bold mb-1">學號</label>
+                        <input type="number" id="student-num" placeholder="例: 15" class="w-full bg-white border-2 border-indigo-200 focus:border-indigo-500 rounded-lg px-4 py-2 font-bold outline-none transition">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-slate-700 font-bold mb-1">姓名</label>
+                    <input type="text" id="student-name" placeholder="請輸入姓名" class="w-full bg-white border-2 border-indigo-200 focus:border-indigo-500 rounded-lg px-4 py-2 font-bold outline-none transition">
+                </div>
+                
+                <div class="mt-2 bg-amber-50 p-4 rounded-xl border border-amber-200 flex justify-between items-center">
+                    <span class="font-bold text-amber-800">獲得星星總數：</span>
+                    <span class="text-2xl font-black text-amber-600"><span id="modal-score-display">0</span> <span class="text-base text-amber-700/60">/ <span id="modal-max-score">0</span></span></span>
+                </div>
+                
+                <div class="flex gap-3 mt-4">
+                    <button onclick="window.closeSubmitModal()" class="flex-1 py-3 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl font-bold transition">取消</button>
+                    <button onclick="window.submitData()" class="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition shadow-md flex justify-center items-center gap-2" id="submit-btn">
+                        📤 確認遞交
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.focusMode = false;
+        window.audioCtx = null;
+        window.soundEnabled = true;
+        window.writer = null;
+        window.globalScore = 0;
+        window.maxScore = 0; // 全局最高分
+        
+        window.initAudio = function() {
+            if (!window.audioCtx) window.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (window.audioCtx.state === 'suspended') window.audioCtx.resume();
+        };
+
+        window.toggleSound = function(e) {
+            e.stopPropagation(); window.soundEnabled = !window.soundEnabled;
+            document.getElementById('sound-toggle').textContent = window.soundEnabled ? '🔊' : '🔇';
+        };
+
+        window.playSound = function(type) {
+            if (!window.soundEnabled || !window.audioCtx) return;
+            const osc = window.audioCtx.createOscillator(); const gainNode = window.audioCtx.createGain();
+            osc.connect(gainNode); gainNode.connect(window.audioCtx.destination);
+            if (type === 'correct') { 
+                osc.type = 'sine'; osc.frequency.setValueAtTime(600, window.audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(1200, window.audioCtx.currentTime + 0.1);
+                gainNode.gain.setValueAtTime(0.1, window.audioCtx.currentTime); gainNode.gain.exponentialRampToValueAtTime(0.01, window.audioCtx.currentTime + 0.1);
+                osc.start(); osc.stop(window.audioCtx.currentTime + 0.1);
+            } else if (type === 'wrong') { 
+                osc.type = 'triangle'; osc.frequency.setValueAtTime(200, window.audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(150, window.audioCtx.currentTime + 0.2);
+                gainNode.gain.setValueAtTime(0.1, window.audioCtx.currentTime); gainNode.gain.exponentialRampToValueAtTime(0.01, window.audioCtx.currentTime + 0.2);
+                osc.start(); osc.stop(window.audioCtx.currentTime + 0.2);
+            } else if (type === 'pop') { 
+                osc.type = 'sine'; osc.frequency.setValueAtTime(800, window.audioCtx.currentTime);
+                gainNode.gain.setValueAtTime(0.05, window.audioCtx.currentTime); gainNode.gain.exponentialRampToValueAtTime(0.01, window.audioCtx.currentTime + 0.05);
+                osc.start(); osc.stop(window.audioCtx.currentTime + 0.05);
+            }
+        };
+
+        window.speakText = function(text, event) {
+            if (event) { event.stopPropagation(); event.preventDefault(); }
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); 
+                const cleanText = text.replace(/<[^>]*>?/gm, '').replace(/\[|\]/g, '').replace(/【|】/g, '').replace(/_/g, '什麼').replace(/❌|⚠️|✅|👯|👀|📚|📘|🧩|🧮|💥|，|。/g, ''); 
+                const utterance = new SpeechSynthesisUtterance(cleanText);
+                utterance.lang = 'zh-TW'; utterance.rate = 0.85; window.speechSynthesis.speak(utterance);
+            }
+        };
+
+        window.addScore = function(points) {
+            window.globalScore += points;
+            const display = document.getElementById('score-display');
+            display.textContent = window.globalScore;
+            display.classList.add('pop'); setTimeout(() => display.classList.remove('pop'), 400);
+        };
+
+        // ==========================================
+        // 全新 16組 中二單元七秦陵兵馬俑 字庫
+        // ==========================================
+        window.wordDatabase = [
+            {
+                word: "名勝古跡", wordEnglish: "Landmarks", difficulty: 1, introVisual: "🏯📸",
+                introContext: "許多遊客拿著相機去參觀古代留下來的城牆和廟宇。",
+                introQuestion: "這些有歷史價值的地方稱為什麼？",
+                wordExplanation: "有名且風景優美的地方，以及古代遺留下來的建築或遺跡。",
+                thinkChallenge: "如果你要介紹一個香港的「名勝古跡」，你會選哪裡？為什麼？",
+                chars: [
+                    { char: "名", radical: "口", wrongRadicals: ["夕", "日"], components: ["夕", "口"], hint: "晚上(夕)看不見，要用口(口)報出自己的名字。", twinGame: { correct: "名", wrong: "各", diff: "名是夕字頭，各是夂(撇橫撇)喔！" } },
+                    { char: "勝", radical: "力", wrongRadicals: ["月", "生"], components: ["月", "朕(右半)", "力"], hint: "用力(力)戰勝對手，取得勝利。", twinGame: { correct: "勝", wrong: "卷", diff: "勝利要有力量，所以是力字底！" } },
+                    { char: "古", radical: "口", wrongRadicals: ["十", "木"], components: ["十", "口"], hint: "十(十)代人口(口)相傳的，就是古老的事物。", twinGame: { correct: "古", wrong: "舌", diff: "古是十加口，舌是千加口。" } },
+                    { char: "跡", radical: "足", wrongRadicals: ["竹", "亦"], components: ["𧾷", "亦"], hint: "腳(𧾷)走過留下來的痕跡。", twinGame: { correct: "跡", wrong: "亦", diff: "足跡是用腳走出來的，要有足部！" } }
+                ],
+                secret: {
+                    blocks: ["名", "勝", "古", "跡"],
+                    formula: { pattern: "參觀 [ 名勝古跡 ]", example: "例：我們去北京參觀名勝古跡。" },
+                    minefield: { wrong: "我吃了一碗名勝古跡。", reason: "點解錯：名勝古跡是風景和建築，不能用來吃！" }
+                },
+                semanticGames: {
+                    synonym: { options: ["歷史名勝", "現代都市", "破舊廢墟"], correct: "歷史名勝" },
+                    context: { options: [{text: "去參觀萬里長城", emoji: "🧱📸"}, {text: "去百貨公司買鞋", emoji: "🛍️👟"}, {text: "在家裡玩電腦遊戲", emoji: "💻🎮"}], correctIndex: 0 }
+                },
+                sentenceUnscramble: ["我們", "放假", "去參觀", "著名的", "名勝古跡"],
+                fillInGame: { sentence: "萬里長城是中國著名的____，每年吸引許多遊客。", options: ["名勝古跡", "巍然", "粗獷"], correct: "名勝古跡" }
+            },
+            {
+                word: "雄奇", wordEnglish: "Grand", difficulty: 2, introVisual: "⛰️😲",
+                introContext: "站在高山上往下看，風景非常壯闊、特別。",
+                introQuestion: "形容風景壯闊奇特，可以用什麼詞？",
+                wordExplanation: "雄偉奇特。",
+                thinkChallenge: "你看過最「雄奇」的自然風景是什麼？",
+                chars: [
+                    { char: "雄", radical: "隹", wrongRadicals: ["厷", "大"], components: ["厷", "隹"], hint: "強壯的鳥(隹)叫做雄鳥，引申為雄偉。", twinGame: { correct: "雄", wrong: "雕", diff: "雄的左邊是厷(公字的變形)。" } },
+                    { char: "奇", radical: "大", wrongRadicals: ["可", "口"], components: ["大", "可"], hint: "非常大(大)而且令人認可(可)的，就是奇特。", twinGame: { correct: "奇", wrong: "椅", diff: "奇怪不是木頭做的，沒有木字旁。" } }
+                ],
+                secret: {
+                    blocks: ["雄", "奇"],
+                    formula: { pattern: "[ 風景 / 山川 ] + [ 雄奇 ]", example: "例：這裡的自然風景十分雄奇。" },
+                    minefield: { wrong: "這隻小狗長得很雄奇。", reason: "點解錯：「雄奇」多用來形容高山大川等壯麗的自然景觀，不用來形容小動物。" }
+                },
+                semanticGames: {
+                    synonym: { options: ["壯麗奇特", "平淡無奇", "微小可愛"], correct: "壯麗奇特" },
+                    context: { options: [{text: "看到高聳入雲的奇異大山", emoji: "⛰️😲"}, {text: "看見路邊一朵小野花", emoji: "🌼🙂"}, {text: "喝了一杯普通的白開水", emoji: "💧😐"}], correctIndex: 0 }
+                },
+                sentenceUnscramble: ["這裡的", "自然風景", "真是", "雄奇", "壯麗"],
+                fillInGame: { sentence: "黃山的風景____，讓人嘆為觀止。", options: ["粗獷", "雄奇", "踉蹌"], correct: "雄奇" }
+            },
+            {
+                word: "著名", wordEnglish: "Famous", difficulty: 1, introVisual: "🌟👏",
+                introContext: "大家都認識這位科學家，他在全世界都很有名。",
+                introQuestion: "形容一個人非常有名，可以怎麼說？",
+                wordExplanation: "非常有名，大家都知道。",
+                thinkChallenge: "如果你將來想成為一個「著名」的人，你想因為什麼事情出名？",
+                chars: [
+                    { char: "著", radical: "艸", wrongRadicals: ["者", "日"], components: ["艹", "者"], hint: "草(艹)長得很明顯，讓人看見(者)，引申為顯著、著名。", twinGame: { correct: "著", wrong: "煮", diff: "著名的著上面是草字頭(艹)，煮菜的煮下面是四點水(灬)。" } },
+                    { char: "名", radical: "口", wrongRadicals: ["夕", "月"], components: ["夕", "口"], hint: "晚上(夕)看不見，要用口(口)報出自己的名字。", twinGame: { correct: "名", wrong: "各", diff: "名是夕字頭，各是夂(撇橫撇)喔！" } }
+                ],
+                secret: {
+                    blocks: ["著", "名"],
+                    formula: { pattern: "[ 是 / 成為 ] + [ 著名 ] 的人/地方", example: "例：他是一位著名的作家。" },
+                    minefield: { wrong: "這是一顆著名的蘋果。", reason: "點解錯：普通的蘋果不能用「著名」形容，除非它是歷史上有特別意義的蘋果(如牛頓的蘋果)。" }
+                },
+                semanticGames: {
+                    synonym: { options: ["聞名", "無名", "平凡"], correct: "聞名" },
+                    context: { options: [{text: "全世界都知道的科學家", emoji: "👨‍🔬🌍"}, {text: "路上隨便遇到的一個陌生人", emoji: "🚶‍♂️❓"}, {text: "昨天剛買的一本普通筆記本", emoji: "📓😐"}], correctIndex: 0 }
+                },
+                sentenceUnscramble: ["他", "是", "一位", "非常", "著名的", "科學家"],
+                fillInGame: { sentence: "李白是中國歷史上____的詩人。", options: ["著名", "巍然", "踉蹌"], correct: "著名" }
+            },
+            {
+                word: "神態各異", wordEnglish: "Diverse (expressions)", difficulty: 3, introVisual: "🎭🤔",
+                introContext: "這群雕像有的在笑，有的很嚴肅，每一個的表情都不一樣。",
+                introQuestion: "形容表情和姿態各自不同，叫什麼？",
+                wordExplanation: "神情和姿態各自不同。",
+                thinkChallenge: "在班上同學聽笑話時，大家的反應也會「神態各異」嗎？描述一下。",
+                chars: [
+                    { char: "神", radical: "示", wrongRadicals: ["申", "田"], components: ["示", "申"], hint: "神明(示)掌管天地，引申為精神、神情。", twinGame: { correct: "神", wrong: "伸", diff: "神情要有示字旁(礻)。" } },
+                    { char: "態", radical: "心", wrongRadicals: ["能", "月"], components: ["能", "心"], hint: "心(心)裡的能力(能)表現出來，就是姿「態」。", twinGame: { correct: "態", wrong: "熊", diff: "姿態是內心表現，下面是心，不是四點水。" } },
+                    { char: "各", radical: "口", wrongRadicals: ["夂", "木"], components: ["夂", "口"], hint: "每個人開口(口)說的話都不同，代表「各」自。", twinGame: { correct: "各", wrong: "名", diff: "各的上面是夂(撇橫撇)喔！" } },
+                    { char: "異", radical: "田", wrongRadicals: ["共", "八"], components: ["田", "共(變形)"], hint: "田地(田)分給不同的人(共)，代表差「異」、不同。", twinGame: { correct: "異", wrong: "導", diff: "異的下面是共的變形，沒有寸字。" } }
+                ],
+                secret: {
+                    blocks: ["神", "態", "各", "異"],
+                    formula: { pattern: "[ 雕像 / 人們 ] + [ 神態各異 ]", example: "例：兵馬俑每一個都神態各異。" },
+                    minefield: { wrong: "這兩顆一模一樣的球神態各異。", reason: "點解錯：「各異」代表不一樣，一模一樣的東西不能用這個詞！" }
+                },
+                semanticGames: {
+                    synonym: { options: ["千姿百態", "千篇一律", "一模一樣"], correct: "千姿百態" },
+                    context: { options: [{text: "一百個雕像每個表情都不同", emoji: "🗿😲😠"}, {text: "工廠做出來完全相同的杯子", emoji: "☕☕☕"}, {text: "雙胞胎穿著一樣的衣服", emoji: "👯‍♂️👕"}], correctIndex: 0 }
+                },
+                sentenceUnscramble: ["這些", "兵馬俑", "每一個", "都", "神態各異"],
+                fillInGame: { sentence: "廣場上的人們____，有的開心，有的著急。", options: ["神態各異", "舉世罕見", "久經沙場"], correct: "神態各異" }
+            },
+            {
+                word: "舉世罕見", wordEnglish: "Rare", difficulty: 3, introVisual: "💎🌍",
+                introContext: "這顆鑽石全世界只有一顆，非常難找。",
+                introQuestion: "形容全世界都很難見到，可以怎麼說？",
+                wordExplanation: "全世界都很少見到，形容非常稀有。",
+                thinkChallenge: "如果你發現了一個「舉世罕見」的寶物，你會把它捐給博物館還是自己留著？",
+                chars: [
+                    { char: "舉", radical: "手", wrongRadicals: ["與", "八"], components: ["與(頂部)", "手"], hint: "用手(手)把東西抬起來，就是「舉」起。", twinGame: { correct: "舉", wrong: "與", diff: "舉起東西要用手，下面有手字。" } },
+                    { char: "世", radical: "一", wrongRadicals: ["十", "廿"], components: ["十", "廿"], hint: "三十年為一世，代表長久的時間或全「世」界。", twinGame: { correct: "世", wrong: "出", diff: "世界是平的，上面沒有山字頭。" } },
+                    { char: "罕", radical: "网", wrongRadicals: ["干", "十"], components: ["网", "干"], hint: "用網子(网)去抓也很難抓到(干)，代表稀「罕」。", twinGame: { correct: "罕", wrong: "旱", diff: "罕見的罕上面有網字頭(罒)。" } },
+                    { char: "見", radical: "見", wrongRadicals: ["目", "儿"], components: ["目", "儿"], hint: "用眼睛(目)看，就是看「見」。", twinGame: { correct: "見", wrong: "貝", diff: "看見是用眼睛(目)，不是貝殼(貝)。" } }
+                ],
+                secret: {
+                    blocks: ["舉", "世", "罕", "見"],
+                    formula: { pattern: "[ 珍寶 / 奇觀 ] 是 [ 舉世罕見 ] 的", example: "例：這件古董真是舉世罕見。" },
+                    minefield: { wrong: "便利商店裡的白開水舉世罕見。", reason: "點解錯：白開水到處都有，一點都不罕見！" }
+                },
+                semanticGames: {
+                    synonym: { options: ["世所罕見", "司空見慣", "隨處可見"], correct: "世所罕見" },
+                    context: { options: [{text: "全世界唯一會發光的奇石", emoji: "💎✨"}, {text: "路邊到處都是的野草", emoji: "🌿🚶"}, {text: "超市裡賣的普通飲料", emoji: "🥤🏪"}], correctIndex: 0 }
+                },
+                sentenceUnscramble: ["這種", "珍貴的", "寶石", "真是", "舉世罕見"],
+                fillInGame: { sentence: "秦始皇兵馬俑被譽為____的歷史奇蹟。", options: ["舉世罕見", "意氣昂揚", "粗獷"], correct: "舉世罕見" }
+            },
+            {
+                word: "久經沙場", wordEnglish: "Veteran", difficulty: 3, introVisual: "⚔️🛡️",
+                introContext: "這位老將軍打過無數次仗，非常有經驗。",
+                introQuestion: "形容長時間經歷戰爭的考驗，怎麼說？",
+                wordExplanation: "長時間經歷戰爭的考驗。比喻經驗非常豐富。",
+                thinkChallenge: "除了打仗，在什麼職業（如：醫生、廚師）裡，你也會形容他們「久經沙場」？",
+                chars: [
+                    { char: "久", radical: "丿", wrongRadicals: ["人", "入"], components: ["丿", "㇏"], hint: "支撐很久的時間。", twinGame: { correct: "久", wrong: "夕", diff: "長久的久是一撇加一捺勾。" } },
+                    { char: "經", radical: "糸", wrongRadicals: ["巠", "工"], components: ["糸", "巠"], hint: "像絲線(糸)一樣長長地經過，代表「經」歷。", twinGame: { correct: "經", wrong: "輕", diff: "經歷和時間線有關，用糸字旁；輕重是用車子載。" } },
+                    { char: "沙", radical: "水", wrongRadicals: ["少", "小"], components: ["氵", "少"], hint: "水(氵)邊少(少)量的細小石頭，就是「沙」子。", twinGame: { correct: "沙", wrong: "炒", diff: "沙子在水邊，是三點水(氵)。" } },
+                    { char: "場", radical: "土", wrongRadicals: ["昜", "日"], components: ["土", "昜"], hint: "一片廣大的泥土(土)地，就是廣「場」。", twinGame: { correct: "場", wrong: "揚", diff: "場地是泥土做的，所以是土字旁。" } }
+                ],
+                secret: {
+                    blocks: ["久", "經", "沙", "場"],
+                    formula: { pattern: "一位 [ 久經沙場 ] 的 [ 老將 / 專家 ]", example: "例：他是一位久經沙場的老將。" },
+                    minefield: { wrong: "剛出生的小嬰兒久經沙場。", reason: "點解錯：小嬰兒沒有任何經驗，不能用久經沙場形容！" }
+                },
+                semanticGames: {
+                    synonym: { options: ["經驗豐富", "初出茅廬", "毫無經驗"], correct: "經驗豐富" },
+                    context: { options: [{text: "打過一百次仗的厲害將軍", emoji: "⚔️👴"}, {text: "第一天上班的新手員工", emoji: "💼👶"}, {text: "剛學會拿畫筆的小孩", emoji: "🖍️🧒"}], correctIndex: 0 }
+                },
+                sentenceUnscramble: ["他", "是", "一位", "久經沙場", "的", "老將"],
+                fillInGame: { sentence: "這位老醫生____，處理過許多困難的手術。", options: ["粗獷", "久經沙場", "風馳電掣"], correct: "久經沙場" }
+            },
+            {
+                word: "轟動", wordEnglish: "Sensational", difficulty: 2, introVisual: "📰💥",
+                introContext: "這部電影上映後，所有人都討論它，新聞也天天報導。",
+                introQuestion: "形容引起極大的震動或注意，可以用什麼詞？",
+                wordExplanation: "引起極大的震動或注意。",
+                thinkChallenge: "如果你能發明一樣「轟動」世界的東西，那會是什麼？",
+                chars: [
+                    { char: "轟", radical: "車", wrongRadicals: ["十", "口"], components: ["車", "車", "車"], hint: "很多台車(車)一起開動，發出巨大的「轟」鳴聲。", twinGame: { correct: "轟", wrong: "車", diff: "轟動的聲音很大，需要三台車！" } },
+                    { char: "動", radical: "力", wrongRadicals: ["重", "雲"], components: ["重", "力"], hint: "用很大的力氣(力)去推很重(重)的東西，讓它「動」起來。", twinGame: { correct: "動", wrong: "懂", diff: "動作需要力量，所以右邊是力字。" } }
+                ],
+                secret: {
+                    blocks: ["轟", "動"],
+                    formula: { pattern: "[ 引起 / 造成 ] 巨大 [ 轟動 ]", example: "例：這則新聞引起了巨大轟動。" },
+                    minefield: { wrong: "我安靜地在圖書館裡轟動。", reason: "點解錯：「轟動」是非常吵鬧、大家都注意的狀態，不能安靜！" }
+                },
+                semanticGames: {
+                    synonym: { options: ["震動", "平靜", "安靜"], correct: "震動" },
+                    context: { options: [{text: "超級巨星來開演唱會大家都在討論", emoji: "🎤🤩"}, {text: "一個人在房間裡看書", emoji: "📖🤫"}, {text: "小貓在角落裡睡午覺", emoji: "🐈💤"}], correctIndex: 0 }
+                },
+                sentenceUnscramble: ["這部", "電影", "上映後", "引起了", "巨大", "轟動"],
+                fillInGame: { sentence: "兵馬俑的發現，在考古界引起了極大的____。", options: ["夙願", "踉蹌", "轟動"], correct: "轟動" }
+            },
+            {
+                word: "巍然", wordEnglish: "Towering", difficulty: 3, introVisual: "🏔️🧍‍♂️",
+                introContext: "這座高山筆直地立在大地上，非常雄偉巨大。",
+                introQuestion: "形容高大雄偉的樣子，叫什麼？",
+                wordExplanation: "高大雄偉的樣子。",
+                thinkChallenge: "除了高山，還有什麼建築物給人「巍然」屹立的感覺？",
+                chars: [
+                    { char: "巍", radical: "山", wrongRadicals: ["女", "鬼"], components: ["山", "魏"], hint: "像山(山)一樣高大雄偉，這就是「巍」。", twinGame: { correct: "巍", wrong: "魏", diff: "巍然是指像山一樣高大，所以上面有山字頭！" } },
+                    { char: "然", radical: "火", wrongRadicals: ["犬", "月"], components: ["肙", "犬", "灬"], hint: "本義是燃燒(灬代表火)，後來引申為「...的樣子」。", twinGame: { correct: "然", wrong: "燃", diff: "巍然的然旁邊不用再加火字旁。" } }
+                ],
+                secret: {
+                    blocks: ["巍", "然"],
+                    formula: { pattern: "[ 高山 / 巨人 ] + [ 巍然 ] + 屹立", example: "例：高山巍然屹立在大地上。" },
+                    minefield: { wrong: "一隻小螞蟻巍然地走過。", reason: "點解錯：「巍然」是形容非常高大雄偉的，小螞蟻太小了！" }
+                },
+                semanticGames: {
+                    synonym: { options: ["高大雄偉", "矮小瘦弱", "搖搖欲墜"], correct: "高大雄偉" },
+                    context: { options: [{text: "高大的山峰立在雲端", emoji: "🏔️☁️"}, {text: "路邊的一棵小草", emoji: "🌱🐜"}, {text: "快要倒塌的破木屋", emoji: "🏚️💨"}], correctIndex: 0 }
+                },
+                sentenceUnscramble: ["高山", "巍然", "屹立", "在", "大地上"],
+                fillInGame: { sentence: "秦始皇的雕像____立在廣場中央。", options: ["巍然", "踉蹌", "著名"], correct: "巍然" }
+            },
+            {
+                word: "夙願", wordEnglish: "Wish", difficulty: 3, introVisual: "🌠🙏",
+                introContext: "他從小的夢想就是當太空人，今天終於實現了。",
+                introQuestion: "長久以來的願望，可以稱為什麼？",
+                wordExplanation: "一向懷有的願望；長久以來的願望。",
+                thinkChallenge: "你有什麼「夙願」是希望長大後能實現的？",
+                chars: [
+                    { char: "夙", radical: "夕", wrongRadicals: ["几", "歹"], components: ["几", "歹"], hint: "早晨或平素、長久以來的意思。", twinGame: { correct: "夙", wrong: "風", diff: "夙裡面是歹，風裡面是虫喔！" } },
+                    { char: "願", radical: "頁", wrongRadicals: ["原", "白"], components: ["原", "頁"], hint: "心裡原本(原)想要達成的期盼，頭(頁)部低下祈求，就是「願」望。", twinGame: { correct: "願", wrong: "原", diff: "願望是人想出來的，右邊有代表頭的「頁」。" } }
+                ],
+                secret: {
+                    blocks: ["夙", "願"],
+                    formula: { pattern: "[ 實現 / 達成 ] + [ 夙願 ]", example: "例：他終於實現了多年的夙願。" },
+                    minefield: { wrong: "我今天中午吃漢堡的夙願實現了。", reason: "點解錯：「夙願」是很久很久以前就有的重大願望，吃午餐太普通了！" }
+                },
+                semanticGames: {
+                    synonym: { options: ["長久願望", "一時衝動", "隨口說說"], correct: "長久願望" },
+                    context: { options: [{text: "等了十年終於當上太空人", emoji: "🚀👨‍🚀"}, {text: "昨天突然想喝一杯珍珠奶茶", emoji: "🧋😋"}, {text: "走在路上不小心撿到十塊錢", emoji: "🪙🚶"}], correctIndex: 0 }
+                },
+                sentenceUnscramble: ["他", "終於", "實現了", "多年來的", "夙願"],
+                fillInGame: { sentence: "考上理想的大學，是他長久以來的____。", options: ["建築", "威嚴", "夙願"], correct: "夙願" }
+            },
+            {
+                word: "堅毅", wordEnglish: "Resolute", difficulty: 2, introVisual: "😤💪",
+                introContext: "面對困難，他不退縮，咬緊牙關繼續努力。",
+                introQuestion: "形容堅定有毅力，不輕易放棄，怎麼說？",
+                wordExplanation: "堅定有毅力，不輕易放棄。",
+                thinkChallenge: "在學什麼新技能的時候，你最需要拿出「堅毅」的精神？",
+                chars: [
+                    { char: "堅", radical: "土", wrongRadicals: ["臣", "又"], components: ["臤", "土"], hint: "像緊握泥土一樣，非常穩固「堅」定。", twinGame: { correct: "堅", wrong: "緊", diff: "堅固和土地有關，下面是「土」。" } },
+                    { char: "毅", radical: "殳", wrongRadicals: ["豕", "八"], components: ["豙", "殳"], hint: "像野豬(豙)生氣豎起毛發，用手拿武器(殳)堅持到底，代表「毅」力。", twinGame: { correct: "毅", wrong: "設", diff: "毅的左邊是豙(有豕)。" } }
+                ],
+                secret: {
+                    blocks: ["堅", "毅"],
+                    formula: { pattern: "[ 憑著 / 擁有 ] + [ 堅毅 ] 的精神", example: "例：他憑著堅毅的精神完成任務。" },
+                    minefield: { wrong: "這塊餅乾咬起來很堅毅。", reason: "點解錯：「堅毅」用來形容人的精神或性格，餅乾很硬只能說「堅硬」！" }
+                },
+                semanticGames: {
+                    synonym: { options: ["堅定不屈", "軟弱無力", "輕言放棄"], correct: "堅定不屈" },
+                    context: { options: [{text: "跌倒受傷還是咬牙跑完馬拉松", emoji: "🏃‍♂️🩹"}, {text: "功課寫錯一題就生氣不想寫了", emoji: "📝😡"}, {text: "遇到不會的字直接放棄", emoji: "📖🙅‍♂️"}], correctIndex: 0 }
+                },
+                sentenceUnscramble: ["他", "憑著", "堅毅的", "精神", "完成", "任務"],
+                fillInGame: { sentence: "即使訓練很辛苦，他依然____地撐了下來。", options: ["堅毅", "粗獷", "神態各異"], correct: "堅毅" }
+            },
+            {
+                word: "建築", wordEnglish: "Building / Architecture", difficulty: 1, introVisual: "🏢🏗️",
+                introContext: "工人們正在蓋一棟很高很高的大樓。",
+                introQuestion: "建造房屋或橋樑的工作，或蓋好的實體物叫什麼？",
+                wordExplanation: "建造房屋、橋樑等；或指這些建造出來的實體物。",
+                thinkChallenge: "你最喜歡的「建築」是什麼樣子的？（例如：很高、有很多玻璃）",
+                chars: [
+                    { char: "建", radical: "廴", wrongRadicals: ["聿", "走"], components: ["廴", "聿"], hint: "拿著筆規劃長遠的步伐去「建」立事物。", twinGame: { correct: "建", wrong: "健", diff: "建立房屋沒有人字旁喔。" } },
+                    { char: "築", radical: "竹", wrongRadicals: ["木", "工"], components: ["竹", "筑"], hint: "古代蓋房子常會用到竹子(竹)和木頭。", twinGame: { correct: "築", wrong: "筑", diff: "建築的築上面要有竹字頭。" } }
+                ],
+                secret: {
+                    blocks: ["建", "築"],
+                    formula: { pattern: "一棟 [ 宏偉 / 特別 ] 的 [ 建築 ]", example: "例：這棟建築的設計非常特別。" },
+                    minefield: { wrong: "我昨天建築了一幅畫。", reason: "點解錯：「建築」用在蓋房子或橋樑，畫畫只能說「畫」或「創作」。" }
+                },
+                semanticGames: {
+                    synonym: { options: ["房屋樓宇", "自然風景", "美味食物"], correct: "房屋樓宇" },
+                    context: { options: [{text: "工人在工地裡蓋房子", emoji: "🏗️👷"}, {text: "廚師在廚房裡煮菜", emoji: "🍳👨‍🍳"}, {text: "畫家在畫布上塗顏色", emoji: "🎨🖌️"}], correctIndex: 0 }
+                },
+                sentenceUnscramble: ["這棟", "建築", "的", "設計", "非常", "特別"],
+                fillInGame: { sentence: "香港有許多高樓大廈，是現代化的____。", options: ["建築", "威嚴", "夙願"], correct: "建築" }
+            },
+            {
+                word: "意氣昂揚", wordEnglish: "Spirited", difficulty: 3, introVisual: "😤✨",
+                introContext: "比賽前，球員們大聲歡呼，充滿自信地走向球場。",
+                introQuestion: "形容精神振奮，氣概激昂，可以用什麼成語？",
+                wordExplanation: "精神振奮，氣概激昂。",
+                thinkChallenge: "什麼時候你會感到「意氣昂揚」？（例如：比賽前、領獎時）",
+                chars: [
+                    { char: "意", radical: "心", wrongRadicals: ["音", "日"], components: ["音", "心"], hint: "心裡發出的聲音(音)，就是心「意」。", twinGame: { correct: "意", wrong: "憶", diff: "意氣的意左邊沒有豎心旁喔。" } },
+                    { char: "氣", radical: "气", wrongRadicals: ["米", "水"], components: ["气", "米"], hint: "像煮米飯時冒出的蒸汽(气)，代表「氣」體或氣概。", twinGame: { correct: "氣", wrong: "汽", diff: "意氣的氣裡面是米字。" } },
+                    { char: "昂", radical: "日", wrongRadicals: ["卬", "月"], components: ["日", "卬"], hint: "太陽(日)高高升起，代表高「昂」。", twinGame: { correct: "昂", wrong: "卯", diff: "高昂和太陽有關，上面有日字。" } },
+                    { char: "揚", radical: "手", wrongRadicals: ["昜", "日"], components: ["扌", "昜"], hint: "用手(扌)把東西高高舉起，就是高「揚」。", twinGame: { correct: "揚", wrong: "場", diff: "飛揚要用手(扌)，不是泥土(土)喔。" } }
+                ],
+                secret: {
+                    blocks: ["意", "氣", "昂", "揚"],
+                    formula: { pattern: "[ 戰士們 / 隊伍 ] + [ 意氣昂揚 ]", example: "例：戰士們意氣昂揚地走向前方。" },
+                    minefield: { wrong: "他考試考了零分，意氣昂揚地回家了。", reason: "點解錯：考零分應該是很難過，「意氣昂揚」是非常有自信、充滿精神的樣子！" }
+                },
+                semanticGames: {
+                    synonym: { options: ["精神振奮", "垂頭喪氣", "無精打采"], correct: "精神振奮" },
+                    context: { options: [{text: "比賽前大家充滿自信大聲歡呼", emoji: "🙌🏆"}, {text: "生病了躺在床上不想動", emoji: "🤒🛌"}, {text: "輸了比賽低著頭走回家", emoji: "😞🚶"}], correctIndex: 0 }
+                },
+                sentenceUnscramble: ["戰士們", "意氣昂揚", "地", "走向", "前方"],
+                fillInGame: { sentence: "比賽即將開始，隊員們個個____，準備奪冠。", options: ["意氣昂揚", "風馳電掣", "踉蹌"], correct: "意氣昂揚" }
+            },
+            {
+                word: "踉蹌", wordEnglish: "Stumbling", difficulty: 3, introVisual: "🥴🚶‍♂️",
+                introContext: "他腳受傷了，走路搖搖晃晃，好像快要跌倒。",
+                introQuestion: "形容走路不平穩，跌跌撞撞的樣子叫什麼？",
+                wordExplanation: "走路不平穩，跌跌撞撞的樣子。",
+                thinkChallenge: "除了受傷，還有什麼情況會讓人走路「踉蹌」？",
+                chars: [
+                    { char: "踉", radical: "足", wrongRadicals: ["良", "口"], components: ["𧾷", "良"], hint: "腳(𧾷)步不穩的樣子。", twinGame: { correct: "踉", wrong: "浪", diff: "走路跌撞和腳有關，是足字旁。" } },
+                    { char: "蹌", radical: "足", wrongRadicals: ["倉", "人"], components: ["𧾷", "倉"], hint: "腳(𧾷)步急促不穩，踉「蹌」。", twinGame: { correct: "蹌", wrong: "槍", diff: "踉蹌是腳步不穩，也是足字旁。" } }
+                ],
+                secret: {
+                    blocks: ["踉", "蹌"],
+                    formula: { pattern: "[ 跌跌撞撞 / 腳步 ] + [ 踉蹌 ]", example: "例：他受傷後走路顯得有些踉蹌。" },
+                    minefield: { wrong: "火箭踉蹌地飛向太空。", reason: "點解錯：「踉蹌」是用來形容人或動物走路不穩，火箭是用飛的！" }
+                },
+                semanticGames: {
+                    synonym: { options: ["跌跌撞撞", "大步流星", "健步如飛"], correct: "跌跌撞撞" },
+                    context: { options: [{text: "受傷後走路搖搖晃晃快跌倒", emoji: "🤕🚶"}, {text: "在操場上跑得非常快", emoji: "🏃‍♂️💨"}, {text: "直挺挺地站在原地不動", emoji: "🧍‍♂️💂"}], correctIndex: 0 }
+                },
+                sentenceUnscramble: ["他", "受傷後", "走路", "顯得", "有些", "踉蹌"],
+                fillInGame: { sentence: "他踩到香蕉皮，腳步____，差點摔倒。", options: ["踉蹌", "著名", "威嚴"], correct: "踉蹌" }
+            },
+            {
+                word: "風馳電掣", wordEnglish: "Fast (like wind and lightning)", difficulty: 3, introVisual: "🏎️⚡",
+                introContext: "跑車在賽道上咻一聲就過去了，快得連影子都看不清。",
+                introQuestion: "形容速度非常快，像風吹和閃電一樣，怎麼說？",
+                wordExplanation: "形容速度非常快，像風吹和閃電一樣。",
+                thinkChallenge: "你坐過最「風馳電掣」的交通工具是什麼？",
+                chars: [
+                    { char: "風", radical: "風", wrongRadicals: ["几", "虫"], components: ["風"], hint: "風本身就是部首，代表空氣流動。", twinGame: { correct: "風", wrong: "鳳", diff: "風裡面是虫，鳳裡面是鳥。" } },
+                    { char: "馳", radical: "馬", wrongRadicals: ["也", "土"], components: ["馬", "也"], hint: "馬(馬)跑得非常快，就是奔「馳」。", twinGame: { correct: "馳", wrong: "地", diff: "跑得快需要馬，是馬字旁。" } },
+                    { char: "電", radical: "雨", wrongRadicals: ["申", "田"], components: ["雨", "申"], hint: "下雨(雨)天常見的閃電(申)。", twinGame: { correct: "電", wrong: "雷", diff: "電的上面是雨字頭。" } },
+                    { char: "掣", radical: "手", wrongRadicals: ["制", "刀"], components: ["制", "手"], hint: "用手(手)牽拉，形容像閃電一樣快速閃過。", twinGame: { correct: "掣", wrong: "制", diff: "掣下面有一個手字底喔。" } }
+                ],
+                secret: {
+                    blocks: ["風", "馳", "電", "掣"],
+                    formula: { pattern: "[ 賽車 / 列車 ] + [ 風馳電掣 ] 般駛過", example: "例：賽車在跑道上風馳電掣般駛過。" },
+                    minefield: { wrong: "蝸牛風馳電掣地爬過樹葉。", reason: "點解錯：蝸牛很慢！「風馳電掣」是超級無敵快的意思。" }
+                },
+                semanticGames: {
+                    synonym: { options: ["快如閃電", "慢慢吞吞", "停滯不前"], correct: "快如閃電" },
+                    context: { options: [{text: "跑車在賽道上咻一聲就過去了", emoji: "🏎️💨"}, {text: "老爺爺拄著拐杖慢慢走", emoji: "👴🚶‍♂️"}, {text: "烏龜在泥土上慢慢爬", emoji: "🐢🐌"}], correctIndex: 0 }
+                },
+                sentenceUnscramble: ["賽車", "在", "跑道上", "風馳電掣", "般", "駛過"],
+                fillInGame: { sentence: "高鐵列車____地駛入車站。", options: ["風馳電掣", "神態各異", "艱苦奮鬥"], correct: "風馳電掣" }
+            },
+            {
+                word: "威嚴", wordEnglish: "Majestic / Awe-inspiring", difficulty: 2, introVisual: "🦁👑",
+                introContext: "國王坐在寶座上，表情很嚴肅，讓大家都不敢亂動。",
+                introQuestion: "形容有威風、尊嚴，令人敬畏，怎麼說？",
+                wordExplanation: "有威風、尊嚴，令人敬畏。",
+                thinkChallenge: "你覺得什麼動物看起來最「威嚴」？為什麼？",
+                chars: [
+                    { char: "威", radical: "女", wrongRadicals: ["戌", "戈"], components: ["戌", "女"], hint: "有威力，令人敬畏。", twinGame: { correct: "威", wrong: "咸", diff: "威裡面有一個女字喔。" } },
+                    { char: "嚴", radical: "口", wrongRadicals: ["厂", "敢"], components: ["吅", "厂", "敢"], hint: "說話(吅)很嚴肅，不敢(敢)放鬆，就是「嚴」厲。", twinGame: { correct: "嚴", wrong: "岩", diff: "嚴肅的嚴上面有兩個口(吅)。" } }
+                ],
+                secret: {
+                    blocks: ["威", "嚴"],
+                    formula: { pattern: "[ 表情 / 父親 / 將軍 ] + 十分 [ 威嚴 ]", example: "例：將軍的表情顯得十分威嚴。" },
+                    minefield: { wrong: "這隻剛出生的小黃色小鴨很威嚴。", reason: "點解錯：小鴨子很可愛，不會讓人害怕，「威嚴」是要讓人敬畏的！" }
+                },
+                semanticGames: {
+                    synonym: { options: ["莊嚴威風", "滑稽可笑", "平易近人"], correct: "莊嚴威風" },
+                    context: { options: [{text: "國王嚴肅地看著大家讓人害怕", emoji: "👑😐"}, {text: "小丑在台上丟球講笑話", emoji: "🤡🤹"}, {text: "幼稚園老師溫柔地說故事", emoji: "👩‍🏫📖"}], correctIndex: 0 }
+                },
+                sentenceUnscramble: ["將軍", "的", "表情", "顯得", "十分", "威嚴"],
+                fillInGame: { sentence: "校長站在台上，神情____地對全校講話。", options: ["威嚴", "踉蹌", "著名"], correct: "威嚴" }
+            },
+            {
+                word: "粗獷", wordEnglish: "Rugged", difficulty: 3, introVisual: "🤠🌲",
+                introContext: "他長得高大壯碩，留著大鬍子，給人一種狂野的感覺。",
+                introQuestion: "形容粗大狂野；豪放不羈，怎麼說？",
+                wordExplanation: "粗大狂野；豪放不羈。",
+                thinkChallenge: "你會用「粗獷」來形容一朵花嗎？為什麼？",
+                chars: [
+                    { char: "粗", radical: "米", wrongRadicals: ["且", "月"], components: ["米", "且"], hint: "米(米)沒有精細加工過，就是「粗」糙。", twinGame: { correct: "粗", wrong: "祖", diff: "粗糙的粗是米字旁，不是示字旁喔！" } },
+                    { char: "獷", radical: "犬", wrongRadicals: ["廣", "广"], components: ["犭", "廣"], hint: "像野狗(犭)一樣野性未除，引申為狂野、粗「獷」。", twinGame: { correct: "獷", wrong: "擴", diff: "粗獷代表狂野，所以是犬部(犭)，不是手部(扌)。" } }
+                ],
+                secret: {
+                    blocks: ["粗", "獷"],
+                    formula: { pattern: "[ 外表 / 聲音 / 風格 ] + 顯得 [ 粗獷 ]", example: "例：他的外表有一種粗獷的美。" },
+                    minefield: { wrong: "這條粉紅色的蕾絲裙很粗獷。", reason: "點解錯：蕾絲裙很精緻柔軟，「粗獷」是用來形容狂野、豪邁的！" }
+                },
+                semanticGames: {
+                    synonym: { options: ["豪放狂野", "溫柔細膩", "精緻小巧"], correct: "豪放狂野" },
+                    context: { options: [{text: "長得高壯留著大鬍子的獵人", emoji: "🧔🪓"}, {text: "穿著粉紅色洋裝的洋娃娃", emoji: "👗👧"}, {text: "一條用金線繡花的精緻手帕", emoji: "🧵✨"}], correctIndex: 0 }
+                },
+                sentenceUnscramble: ["他的", "外表", "有一種", "粗獷的", "美"],
+                fillInGame: { sentence: "這位雕塑家的作品風格十分____。", options: ["粗獷", "神態各異", "舉世罕見"], correct: "粗獷" }
+            }
+        ];
+
+        // ==========================================
+        // 核心業務邏輯
+        // ==========================================
+        window.currentWordData = null;
+        window.currentCharData = null;
+        window.currentFilter = 'all';
+        
+        // 重組句子狀態管理
+        window.unscrambleSlots = []; // 儲存 source index
+        window.validatedSlots = [];  
+        window.unscrambleAttempts = 0;
+
+        window.onload = function() {
+            // 計算滿分
+            window.maxScore = 0;
+            window.wordDatabase.forEach(w => {
+                w.chars.forEach(c => {
+                    window.maxScore += 2; // radical
+                    window.maxScore += 2; // write
+                    if(c.twinGame) window.maxScore += 3; // twin
+                });
+                window.maxScore += 3; // synonym
+                window.maxScore += 3; // context
+                window.maxScore += 5; // fillin
+                window.maxScore += 5; // unscramble
+            });
+            document.getElementById('max-score-display').textContent = window.maxScore;
+            document.getElementById('modal-max-score').textContent = window.maxScore;
+
+            window.renderWordList('all');
+            if(document.getElementById('word-list').querySelector('button')) {
+                document.getElementById('word-list').querySelector('button').click();
+            }
+        };
+
+        window.filterDifficulty = function(level, btnElem) {
+            window.playSound('pop'); window.currentFilter = level;
+            document.querySelectorAll('.diff-btn').forEach(b => b.className = "diff-btn px-6 py-2 rounded-lg text-slate-500 hover:bg-slate-200 border border-transparent transition-all");
+            btnElem.className = "diff-btn px-6 py-2 rounded-lg text-indigo-900 bg-indigo-200 shadow-sm border border-indigo-300 transition-all";
+            window.renderWordList(level);
+        };
+
+        window.renderWordList = function(level) {
+            const list = document.getElementById('word-list');
+            list.innerHTML = '';
+            window.wordDatabase.forEach((data, index) => {
+                if (level === 'all' || data.difficulty === level) {
+                    const li = document.createElement('li');
+                    li.className = "flex-shrink-0";
+                    li.innerHTML = `
+                        <button onclick="window.selectWord(${index}, this)" class="w-48 text-left px-4 py-3 rounded-xl border-2 border-slate-200 bg-white hover:bg-indigo-50 hover:border-indigo-300 shadow-sm transition-all flex items-center gap-3">
+                            <span class="text-3xl">${Array.from(data.introVisual)[0]}</span>
+                            <div class="flex-1 overflow-hidden">
+                                <div class="font-bold text-lg text-slate-800 truncate">${data.word}</div>
+                                <div class="text-xs text-amber-500 mt-1">${'⭐'.repeat(data.difficulty)}</div>
+                            </div>
+                        </button>`;
+                    list.appendChild(li);
+                }
+            });
+        };
+
+        window.selectWord = function(index, btnElem) {
+            window.playSound('pop');
+            document.querySelectorAll('#word-list button').forEach(b => {
+                b.classList.remove('border-indigo-500', 'bg-indigo-50');
+                b.classList.add('border-slate-200');
+            });
+            btnElem.classList.remove('border-slate-200');
+            btnElem.classList.add('border-indigo-500', 'bg-indigo-50');
+            
+            window.currentWordData = window.wordDatabase[index];
+            document.getElementById('intro-section').classList.remove('hidden');
+            document.getElementById('learning-section').classList.add('hidden');
+            
+            document.getElementById('intro-visual').textContent = window.currentWordData.introVisual;
+            document.getElementById('intro-context').innerHTML = `<span class="text-2xl mr-2">📖</span><p class="text-lg md:text-xl font-medium text-slate-700">${window.currentWordData.introContext}</p>`;
+            document.getElementById('intro-question').innerHTML = `<span class="text-2xl text-indigo-500 mr-2">❓</span><span>${window.currentWordData.introQuestion}</span>`;
+            
+            document.getElementById('main-content').scrollTop = 0;
+        };
+
+        window.revealWord = function() {
+            window.playSound('pop');
+            document.getElementById('intro-section').classList.add('hidden');
+            document.getElementById('learning-section').classList.remove('hidden');
+            
+            // 渲染全字
+            const display = document.getElementById('word-display'); display.innerHTML = '';
+            window.currentWordData.chars.forEach((charData, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "flex flex-col items-center cursor-pointer p-4 rounded-2xl hover:bg-indigo-50 transition-colors border-2 border-transparent focus:outline-none w-28 md:w-32";
+                btn.onclick = () => window.loadCharacter(idx, btn);
+                btn.innerHTML = `<span class="text-7xl md:text-8xl kaishu text-slate-800">${charData.char}</span>`;
+                display.appendChild(btn);
+            });
+
+            // 字典與思考區
+            document.getElementById('word-english').textContent = `ENG: ${window.currentWordData.wordEnglish}`;
+            document.getElementById('word-explanation').innerHTML = window.currentWordData.wordExplanation;
+            document.getElementById('think-challenge').innerHTML = window.currentWordData.thinkChallenge;
+
+            window.renderSecretGuide();
+            window.initSemanticGames();
+            window.initSentenceGames();
+
+            if(display.firstChild) display.firstChild.click();
+        };
+
+        // --- 字與筆順 ---
+        window.loadCharacter = function(charIndex, element) {
+            window.playSound('pop');
+            const siblings = element.parentElement.children;
+            for(let s of siblings) s.classList.remove('border-indigo-300', 'bg-indigo-50', 'shadow-inner');
+            element.classList.add('border-indigo-300', 'bg-indigo-50', 'shadow-inner');
+            window.currentCharData = window.currentWordData.chars[charIndex];
+
+            const canvas = document.getElementById('character-canvas'); canvas.innerHTML = '';
+            window.writer = HanziWriter.create('character-canvas', window.currentCharData.char, {
+                width: canvas.clientWidth || 280, height: canvas.clientHeight || 280, 
+                padding: 15, strokeAnimationSpeed: 1, delayBetweenStrokes: 100, 
+                strokeColor: '#1e293b', radicalColor: '#4f46e5', showOutline: true, outlineColor: '#e2e8f0',
+                drawingWidth: 20, 
+                showHintAfterMisses: 1, 
+                hintAnimationSpeed: 0.3 
+            });
+
+            document.getElementById('components-section').classList.add('hidden', 'opacity-0');
+            document.getElementById('twins-section').classList.add('hidden'); document.getElementById('char-hint-box').classList.add('hidden');
+            
+            // 部首選單
+            const radicalOptions = document.getElementById('radical-options'); radicalOptions.innerHTML = '';
+            let options = [window.currentCharData.radical, ...window.currentCharData.wrongRadicals].sort(() => Math.random() - 0.5);
+            options.forEach(rad => {
+                const btn = document.createElement('button');
+                btn.className = "radical-opt-btn text-3xl kaishu font-bold bg-white border-2 border-indigo-200 text-indigo-700 rounded-xl px-6 py-4 shadow-sm hover:bg-indigo-50 hover:border-indigo-400 focus:outline-none w-20 h-20 flex items-center justify-center";
+                btn.textContent = rad; btn.onclick = () => window.checkRadical(rad, window.currentCharData.radical, btn);
+                radicalOptions.appendChild(btn);
+            });
+            document.getElementById('char-hint-text').textContent = window.currentCharData.hint;
+        };
+
+        window.checkRadical = function(selected, correct, btn) {
+            if (selected === correct) {
+                window.playSound('correct'); window.addScore(2);
+                btn.classList.add('correct');
+                Array.from(btn.parentElement.children).forEach(child => { if(child !== btn) {child.style.opacity = '0.4'; child.style.pointerEvents = 'none';} });
+                
+                const compSection = document.getElementById('components-section'); 
+                compSection.classList.remove('hidden');
+                setTimeout(() => compSection.classList.remove('opacity-0'), 50);
+                
+                const compContainer = document.getElementById('info-components'); compContainer.innerHTML = '';
+                window.currentCharData.components.forEach((comp, idx) => {
+                    compContainer.innerHTML += `<span class="text-4xl component-block">${comp}</span>`;
+                    if(idx < window.currentCharData.components.length - 1) compContainer.innerHTML += `<span class="text-3xl text-indigo-300 font-black px-2">+</span>`;
+                });
+                document.getElementById('char-hint-box').classList.remove('hidden');
+
+                if(window.currentCharData.twinGame) { window.renderTwinGame(window.currentCharData.twinGame); }
+            } else {
+                window.playSound('wrong'); btn.classList.add('shake', 'bg-rose-50', 'border-rose-400', 'text-rose-600');
+                setTimeout(() => btn.classList.remove('shake'), 400);
+            }
+        };
+
+        window.renderTwinGame = function(twinData) {
+            const container = document.getElementById('twin-buttons-container');
+            const explanation = document.getElementById('twin-explanation');
+            const section = document.getElementById('twins-section');
+            
+            explanation.classList.add('hidden'); container.innerHTML = '';
+            let options = [twinData.correct, twinData.wrong].sort(() => Math.random() - 0.5);
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "twin-btn w-32 text-7xl kaishu border-[6px] border-rose-200 bg-white rounded-3xl text-slate-700 shadow-sm focus:outline-none flex items-center justify-center";
+                btn.textContent = opt; btn.onclick = () => window.checkTwinGame(opt, twinData.correct, twinData.diff, btn);
+                container.appendChild(btn);
+            });
+            section.classList.remove('hidden'); section.classList.add('fade-in-up');
+        };
+
+        window.checkTwinGame = function(selected, correct, diffText, btnElem) {
+            const explanation = document.getElementById('twin-explanation');
+            if(selected === correct) {
+                window.playSound('correct'); window.addScore(3);
+                btnElem.classList.add('correct');
+                Array.from(btnElem.parentElement.children).forEach(c => { if(c !== btnElem) { c.classList.add('wrong'); } });
+                explanation.innerHTML = `<span class="text-2xl">👀</span> <span class="flex-1">${diffText}</span>`;
+                explanation.classList.remove('hidden'); explanation.classList.add('pop');
+            } else {
+                window.playSound('wrong'); btnElem.classList.add('wrong', 'shake');
+                setTimeout(() => btnElem.classList.remove('shake'), 400);
+            }
+        };
+
+        window.playAnimation = function() { if(window.writer) window.writer.animateCharacter(); };
+        window.startQuiz = function() {
+            if(!window.writer) return; window.playSound('pop');
+            window.writer.quiz({
+                onMistake: function() { window.playSound('wrong'); }, onCorrectStroke: function() { window.playSound('pop'); },
+                onComplete: function() { window.playSound('correct'); window.addScore(2); }
+            });
+        };
+
+        window.renderSecretGuide = function() {
+            const secret = window.currentWordData.secret;
+            const blockDisp = document.getElementById('block-combine-display'); blockDisp.innerHTML = '';
+            secret.blocks.forEach((char, idx) => {
+                blockDisp.innerHTML += `<span class="bg-rose-500 text-white px-3 py-1 rounded shadow-sm">${char}</span>`;
+                if(idx < secret.blocks.length - 1) blockDisp.innerHTML += `<span class="text-slate-400">+</span>`;
+            });
+            blockDisp.innerHTML += `<span class="text-slate-400">=</span><span class="text-slate-800">${window.currentWordData.word}</span>`;
+
+            document.getElementById('formula-pattern').textContent = secret.formula.pattern;
+            document.getElementById('formula-example').textContent = secret.formula.example;
+            document.getElementById('minefield-wrong').textContent = secret.minefield.wrong;
+            document.getElementById('minefield-reason').textContent = secret.minefield.reason;
+        };
+
+        window.playSecretGuideTTS = function(e) {
+            const secret = window.currentWordData.secret;
+            const text = `積木拼：${secret.blocks.join('加')}等於${window.currentWordData.word}。` +
+                         `百搭公式：${secret.formula.pattern}。${secret.formula.example}。` +
+                         `地雷區：不要說 ${secret.minefield.wrong}。${secret.minefield.reason}`;
+            window.speakText(text, e);
+        };
+
+        window.initSemanticGames = function() {
+            const sg = window.currentWordData.semanticGames;
+            
+            // Synonym
+            document.getElementById('synonym-q').textContent = `哪一個是「${window.currentWordData.word}」的好朋友（近義詞）？`;
+            const synOptContainer = document.getElementById('synonym-options'); synOptContainer.innerHTML = '';
+            let synOpts = [...sg.synonym.options].sort(() => Math.random() - 0.5);
+            synOpts.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "px-4 py-2 bg-white border border-indigo-200 text-indigo-700 font-bold text-lg rounded-lg shadow-sm hover:bg-indigo-50 transition-all flex-1 focus:outline-none";
+                btn.textContent = opt; btn.onclick = () => window.checkSynonym(opt, sg.synonym.correct, btn);
+                synOptContainer.appendChild(btn);
+            });
+            document.getElementById('synonym-msg').style.opacity = '0';
+
+            // Context 
+            document.getElementById('context-q').textContent = `哪一個情況是「${window.currentWordData.word}」？`;
+            const ctxOptContainer = document.getElementById('context-options'); ctxOptContainer.innerHTML = '';
+            let ctxObjs = sg.context.options.map((opt, idx) => ({...opt, isCorrect: idx === sg.context.correctIndex}));
+            ctxObjs.sort(() => Math.random() - 0.5);
+            ctxObjs.forEach(obj => {
+                const btn = document.createElement('button');
+                btn.className = "flex items-center justify-between px-4 py-3 bg-white border border-teal-200 text-teal-800 font-bold text-lg rounded-lg shadow-sm hover:bg-teal-50 transition-all w-full text-left focus:outline-none";
+                btn.innerHTML = `<span>${obj.text}</span><span class="text-2xl ml-2">${obj.emoji}</span>`;
+                btn.onclick = () => window.checkContext(obj.isCorrect, btn);
+                ctxOptContainer.appendChild(btn);
+            });
+            document.getElementById('context-msg').style.opacity = '0';
+        };
+
+        window.checkSynonym = function(selected, correct, btnElem) {
+            const msg = document.getElementById('synonym-msg');
+            if(selected === correct) {
+                window.playSound('correct'); window.addScore(3);
+                btnElem.className = "px-4 py-2 bg-emerald-500 border border-emerald-600 text-white font-bold text-lg rounded-lg shadow-md flex-1 focus:outline-none";
+                Array.from(btnElem.parentElement.children).forEach(c => { if(c !== btnElem) c.style.opacity = '0.3'; c.style.pointerEvents = 'none'; });
+                msg.textContent = "🎉 答對了！他們是好朋友！"; msg.className = "mt-3 text-center font-bold text-emerald-600 pop"; msg.style.opacity = '1';
+            } else {
+                window.playSound('wrong'); btnElem.classList.add('shake', 'bg-rose-50', 'border-rose-400', 'text-rose-600');
+                setTimeout(() => btnElem.classList.remove('shake', 'bg-rose-50', 'border-rose-400', 'text-rose-600'), 400);
+            }
+        };
+
+        window.checkContext = function(isCorrect, btnElem) {
+            const msg = document.getElementById('context-msg');
+            if(isCorrect) {
+                window.playSound('correct'); window.addScore(3);
+                btnElem.className = "flex items-center justify-between px-4 py-3 bg-emerald-500 border border-emerald-600 text-white font-bold text-lg rounded-lg shadow-md w-full text-left focus:outline-none";
+                Array.from(btnElem.parentElement.children).forEach(c => { if(c !== btnElem) c.style.opacity = '0.3'; c.style.pointerEvents = 'none'; });
+                msg.textContent = "🎉 觀察力真好，答對了！"; msg.className = "mt-3 text-center font-bold text-emerald-600 pop"; msg.style.opacity = '1';
+            } else {
+                window.playSound('wrong'); btnElem.classList.add('shake', 'bg-rose-50', 'border-rose-400', 'text-rose-600');
+                setTimeout(() => btnElem.classList.remove('shake', 'bg-rose-50', 'border-rose-400', 'text-rose-600'), 400);
+            }
+        };
+
+        // --- Fill in & Unscramble ---
+        window.initSentenceGames = function() {
+            // 句子重組狀態
+            window.unscrambleAttempts = 0;
+            const targetWords = window.currentWordData.sentenceUnscramble;
+            window.unscrambleSlots = new Array(targetWords.length).fill(null);
+            window.validatedSlots = new Array(targetWords.length).fill(false);
+            window.shuffledWords = [...targetWords].sort(() => Math.random() - 0.5);
+            window.renderUnscramble();
+
+            // 造句填空
+            window.renderFillInGame();
+        };
+
+        window.renderFillInGame = function() {
+            const fillData = window.currentWordData.fillInGame;
+            const display = document.getElementById('fill-in-sentence-display');
+            const optionsContainer = document.getElementById('fill-in-options');
+            document.getElementById('fill-in-msg').style.opacity = '0';
+            
+            const sentenceHTML = fillData.sentence.replace('____', '<span class="inline-block w-28 h-8 border-b-2 border-indigo-400 mx-1 align-bottom bg-white rounded-t-sm" id="fill-in-blank"></span>');
+            display.innerHTML = `
+                <div class="flex items-start gap-2">
+                    <p class="flex-1">${sentenceHTML}</p>
+                    <button onclick="window.speakText('${fillData.sentence.replace('____', '什麼')}', event)" class="tts-btn flex-shrink-0 w-10 h-10 rounded-full bg-slate-200 text-slate-600 shadow-sm flex justify-center items-center text-lg">🗣️</button>
+                </div>`;
+
+            optionsContainer.innerHTML = '';
+            let options = [...fillData.options].sort(() => Math.random() - 0.5);
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "px-5 py-2 bg-white border border-slate-300 text-slate-700 font-bold text-lg rounded-lg shadow-sm hover:bg-slate-100 transition-all active:scale-95 focus:outline-none";
+                btn.textContent = opt; btn.onclick = () => window.checkFillIn(opt, fillData.correct, btn);
+                optionsContainer.appendChild(btn);
+            });
+        };
+
+        window.checkFillIn = function(selected, correct, btnElem) {
+            const msg = document.getElementById('fill-in-msg'); const blank = document.getElementById('fill-in-blank');
+            if (selected === correct) {
+                window.playSound('correct'); window.addScore(5);
+                blank.className = "inline-block px-2 text-emerald-700 bg-emerald-50 border-b-2 border-emerald-500 font-black mx-1 align-bottom rounded-t-sm pop text-center";
+                blank.textContent = selected;
+                for(let b of btnElem.parentElement.children) { b.style.pointerEvents = 'none'; b.className = b === btnElem ? "px-5 py-2 bg-emerald-500 border border-emerald-600 text-white font-bold text-lg rounded-lg shadow-md" : "px-5 py-2 bg-white border border-slate-300 text-slate-700 font-bold text-lg rounded-lg opacity-30"; }
+                msg.textContent = "🎉 句子通順，答對了！"; msg.className = "mt-4 text-center font-bold text-emerald-600 pop"; msg.style.opacity = '1';
+            } else {
+                window.playSound('wrong'); btnElem.classList.add('shake', 'bg-rose-50', 'border-rose-400', 'text-rose-600');
+                msg.textContent = "Oops! 這個詞不太適合喔。"; msg.className = "mt-4 text-center font-bold text-rose-500"; msg.style.opacity = '1';
+                setTimeout(() => { btnElem.classList.remove('shake', 'bg-rose-50', 'border-rose-400', 'text-rose-600'); msg.style.opacity = '0'; }, 1500);
+            }
+        };
+
+        // --- 拖拉方格版 邏輯重組 (支援 Drag and Drop & 點擊) ---
+        window.handleDragStart = function(e, poolIdx) {
+            e.dataTransfer.setData('text/plain', poolIdx);
+        };
+        
+        window.allowDrop = function(e) {
+            e.preventDefault();
+        };
+
+        window.handleDrop = function(e, slotIdx) {
+            e.preventDefault();
+            const poolIdx = parseInt(e.dataTransfer.getData('text/plain'));
+            if (!isNaN(poolIdx) && !window.validatedSlots[slotIdx]) {
+                window.playSound('pop');
+                
+                // 若該位置已有字，先清空
+                if(window.unscrambleSlots[slotIdx] !== null) {
+                    window.unscrambleSlots[slotIdx] = null;
+                }
+                
+                // 若該字已在其他位置，移除舊位置
+                const existingSlotIndex = window.unscrambleSlots.indexOf(poolIdx);
+                if(existingSlotIndex !== -1) {
+                    window.unscrambleSlots[existingSlotIndex] = null;
+                }
+
+                window.unscrambleSlots[slotIdx] = poolIdx;
+                document.getElementById('unscramble-msg').style.opacity = '0';
+                window.renderUnscramble();
+            }
+        };
+
+        window.renderUnscramble = function() {
+            const pool = document.getElementById('word-pool'); 
+            const drop = document.getElementById('drop-zone');
+            pool.innerHTML = ''; drop.innerHTML = '';
+
+            const targetWords = window.currentWordData.sentenceUnscramble;
+
+            // 繪製空槽或已放置的詞語 (Drop Zones)
+            for (let i = 0; i < targetWords.length; i++) {
+                const slotBox = document.createElement('div');
+                
+                // 統一寬度，無標點
+                slotBox.className = `min-w-[40px] md:min-w-[60px] h-12 md:h-14 rounded-lg border-2 border-dashed border-slate-300 flex items-center justify-center bg-slate-50 relative transition-all px-2 slot-box`;
+                // 綁定 Drop 事件
+                slotBox.ondragover = window.allowDrop;
+                slotBox.ondrop = (e) => window.handleDrop(e, i);
+                
+                const wordIdx = window.unscrambleSlots[i];
+                if (wordIdx !== null) {
+                    const wordStr = window.shuffledWords[wordIdx];
+                    const block = document.createElement('div');
+                    
+                    if (window.validatedSlots[i]) {
+                        // 驗證正確，綠色鎖定
+                        block.className = "absolute inset-0 bg-emerald-500 border border-emerald-600 text-white font-bold text-lg rounded-lg shadow-md flex items-center justify-center cursor-default";
+                    } else {
+                        // 尚未驗證正確，可點擊取消
+                        block.className = "absolute inset-0 bg-indigo-500 border border-indigo-600 text-white font-bold text-lg rounded-lg shadow-md flex items-center justify-center cursor-pointer pop hover:bg-indigo-600 transition-colors word-block";
+                        block.onclick = () => window.removeWordFromSlot(i);
+                        // 也可以再拖移出來
+                        block.draggable = true;
+                        block.ondragstart = (e) => {
+                            window.handleDragStart(e, wordIdx);
+                            setTimeout(() => window.removeWordFromSlot(i), 10);
+                        };
+                    }
+                    block.id = `slot-block-${i}`;
+                    block.textContent = wordStr;
+                    slotBox.appendChild(block);
+                    slotBox.classList.remove('border-dashed', 'border-slate-300', 'bg-slate-50');
+                    slotBox.classList.add('border-transparent', 'bg-transparent');
+                } else {
+                    slotBox.innerHTML = `<span class="text-slate-300 font-bold">${i + 1}</span>`;
+                }
+                drop.appendChild(slotBox);
+            }
+
+            // 繪製詞語庫 (Draggables)
+            window.shuffledWords.forEach((word, idx) => {
+                const isUsed = window.unscrambleSlots.includes(idx);
+                const btn = document.createElement('div');
+                btn.className = `word-block px-4 py-2 bg-white border border-slate-300 text-slate-700 font-bold text-lg rounded-lg shadow-sm ${isUsed ? 'opacity-0 pointer-events-none transform scale-50' : 'hover:bg-slate-50'}`;
+                btn.textContent = word; 
+                
+                // 拖拉或點擊
+                if(!isUsed) {
+                    btn.draggable = true;
+                    btn.ondragstart = (e) => window.handleDragStart(e, idx);
+                    btn.onclick = () => window.selectWordForSentence(idx);
+                }
+                
+                pool.appendChild(btn);
+            });
+        };
+
+        window.selectWordForSentence = function(poolIdx) {
+            window.playSound('pop');
+            const emptySlotIdx = window.unscrambleSlots.indexOf(null);
+            if(emptySlotIdx !== -1) {
+                window.unscrambleSlots[emptySlotIdx] = poolIdx;
+                document.getElementById('unscramble-msg').style.opacity = '0';
+                window.renderUnscramble();
+            }
+        };
+
+        window.removeWordFromSlot = function(slotIdx) {
+            window.playSound('pop');
+            if(!window.validatedSlots[slotIdx]) {
+                window.unscrambleSlots[slotIdx] = null;
+                document.getElementById('unscramble-msg').style.opacity = '0';
+                window.renderUnscramble();
+            }
+        };
+
+        window.resetUnscramble = function() { 
+            window.playSound('pop'); 
+            const targetWords = window.currentWordData.sentenceUnscramble;
+            window.unscrambleSlots = new Array(targetWords.length).fill(null);
+            window.validatedSlots = new Array(targetWords.length).fill(false);
+            document.getElementById('unscramble-msg').style.opacity = '0';
+            window.renderUnscramble(); 
+        };
+
+        window.checkUnscramble = function() {
+            const targetWords = window.currentWordData.sentenceUnscramble;
+            const msg = document.getElementById('unscramble-msg');
+
+            // 檢查是否全填滿
+            if (window.unscrambleSlots.includes(null)) {
+                window.playSound('wrong');
+                msg.textContent = "💡 請把所有方格都填滿喔！";
+                msg.className = "mt-3 text-center font-bold text-amber-500 pop";
+                msg.style.opacity = '1';
+                setTimeout(() => { msg.style.opacity = '0'; }, 2000);
+                return;
+            }
+            
+            let allCorrect = true;
+            let anyWrong = false;
+
+            for (let i = 0; i < targetWords.length; i++) {
+                if (window.validatedSlots[i]) continue; // 已經是對的就不管
+
+                const wordIdx = window.unscrambleSlots[i];
+                const wordStr = window.shuffledWords[wordIdx];
+                const block = document.getElementById(`slot-block-${i}`);
+
+                if (wordStr === targetWords[i]) {
+                    window.validatedSlots[i] = true;
+                    if(block) {
+                        block.className = "absolute inset-0 bg-emerald-500 border border-emerald-600 text-white font-bold text-lg rounded-lg shadow-md flex items-center justify-center pop cursor-default";
+                        block.onclick = null;
+                        block.draggable = false;
+                    }
+                } else {
+                    allCorrect = false;
+                    anyWrong = true;
+                    if(block) {
+                        block.className = "absolute inset-0 bg-rose-500 border border-rose-600 text-white font-bold text-lg rounded-lg shadow-md flex items-center justify-center shake word-block cursor-pointer";
+                    }
+                }
+            }
+            
+            if (allCorrect) {
+                window.playSound('correct'); window.addScore(5);
+                msg.textContent = "🎉 恭喜你排對了！句子非常通順！"; 
+                msg.className = "mt-3 text-center font-bold text-emerald-600 pop"; 
+                msg.style.opacity = '1';
+                window.unscrambleAttempts = 0;
+            } else if (anyWrong) {
+                window.playSound('wrong');
+                window.unscrambleAttempts++;
+                
+                // SEN 友善鷹架提示：如果錯2次以上，給出明確提示
+                let hintText = "Oops! 紅色的方塊放錯位置了，再試試看！";
+                if(window.unscrambleAttempts >= 2) {
+                    for(let i=0; i<targetWords.length; i++) {
+                        if(!window.validatedSlots[i]) {
+                            hintText = `💡 提示：第 ${i+1} 個格應該放入「<span class="text-indigo-600 font-black border-b-2 border-indigo-400">${targetWords[i]}</span>」！`;
+                            break;
+                        }
+                    }
+                }
+                
+                msg.innerHTML = hintText;
+                msg.className = "mt-3 text-center font-bold text-rose-500 shake"; 
+                msg.style.opacity = '1';
+
+                // 1.5 秒後自動退回錯的詞
+                setTimeout(() => {
+                    for(let i=0; i<targetWords.length; i++) {
+                        if(!window.validatedSlots[i]) {
+                            window.unscrambleSlots[i] = null;
+                        }
+                    }
+                    window.renderUnscramble();
+                }, 1500);
+            }
+        };
+
+        // ==========================================
+        // Modal & Google Apps Script 提交邏輯
+        // ==========================================
+        window.openSubmitModal = function() {
+            window.playSound('pop');
+            document.getElementById('modal-score-display').textContent = window.globalScore;
+            document.getElementById('submit-modal').classList.remove('hidden');
+        };
+
+        window.closeSubmitModal = function() {
+            window.playSound('pop');
+            document.getElementById('submit-modal').classList.add('hidden');
+        };
+
+        window.submitData = function() {
+            const sClass = document.getElementById('student-class').value.trim();
+            const sNum = document.getElementById('student-num').value.trim();
+            const sName = document.getElementById('student-name').value.trim();
+            
+            if(!sClass || !sNum || !sName) {
+                window.playSound('wrong');
+                alert("請填寫完整的 班別、學號 與 姓名！");
+                return;
+            }
+            
+            const btn = document.getElementById('submit-btn');
+            btn.innerHTML = '⏳ 傳送中...';
+            btn.disabled = true;
+            window.playSound('pop');
+
+            // ⚠️ 請確保這裡貼上的是結尾為 /exec 的網址 ⚠️
+            const GAS_URL = "https://script.google.com/macros/s/AKfycbzMSrG9ZwzDDlKnVS-iYz3L39-q66Zh1Lqy0TVYp-GN3q-GBUsHb883QYI1lNcBqc-p/exec"; 
+            
+            // 收集資料
+            const payload = {
+                timestamp: new Date().toLocaleString('zh-TW', {timeZone: 'Asia/Hong_Kong'}),
+                assignment: "中二單元七 秦陵兵馬俑",
+                class: sClass,
+                number: sNum,
+                name: sName,
+                score: window.globalScore,
+                maxScore: window.maxScore
+            };
+
+            // 實際 POST 到 Google Sheets
+            fetch(GAS_URL, {
+                method: 'POST',
+                mode: 'no-cors', // 允許跨網域請求
+                headers: { 
+                    'Content-Type': 'text/plain;charset=utf-8' 
+                },
+                body: JSON.stringify(payload)
+            }).then(() => {
+                window.playSound('correct');
+                btn.innerHTML = '✅ 遞交成功！';
+                btn.classList.replace('bg-indigo-600', 'bg-emerald-500');
+                btn.classList.replace('hover:bg-indigo-700', 'hover:bg-emerald-600');
+                setTimeout(() => {
+                    window.closeSubmitModal();
+                    btn.innerHTML = '📤 確認遞交';
+                    btn.disabled = false;
+                    btn.classList.replace('bg-emerald-500', 'bg-indigo-600');
+                    btn.classList.replace('hover:bg-emerald-600', 'hover:bg-indigo-700');
+                }, 2000);
+            }).catch(err => {
+                console.error(err);
+                window.playSound('wrong');
+                alert("傳送失敗，請檢查網路連線或稍後再試。");
+                btn.innerHTML = '📤 確認遞交';
+                btn.disabled = false;
+            });
+        }
+    </script>
+</body>
+</html>
