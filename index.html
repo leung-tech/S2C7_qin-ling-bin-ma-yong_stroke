@@ -53,7 +53,7 @@
         .word-block:active { cursor: grabbing; transform: scale(0.95); }
         .slot-box.drag-over { background-color: #e0e7ff; border-color: #6366f1; }
         
-        .tts-btn { transition: transform 0.2s, background-color 0.2s; }
+        .tts-btn { transition: transform 0.2s, background-color 0.2s; cursor: pointer; }
         .tts-btn:active { transform: scale(0.9); }
     </style>
 </head>
@@ -78,10 +78,10 @@
         
         <!-- 難度篩選器 -->
         <div class="flex gap-2 lg:gap-4 p-2 bg-slate-100 text-sm font-bold border-b border-slate-200 justify-center overflow-x-auto whitespace-nowrap">
-            <button onclick="window.filterDifficulty('all', this)" class="diff-btn px-6 py-2 rounded-lg text-indigo-900 bg-indigo-200 shadow-sm border border-indigo-300 transition-all whitespace-nowrap">全部</button>
-            <button onclick="window.filterDifficulty(1, this)" class="diff-btn px-6 py-2 rounded-lg text-slate-500 hover:bg-slate-200 border border-transparent transition-all whitespace-nowrap">⭐</button>
-            <button onclick="window.filterDifficulty(2, this)" class="diff-btn px-6 py-2 rounded-lg text-slate-500 hover:bg-slate-200 border border-transparent transition-all whitespace-nowrap">⭐⭐</button>
-            <button onclick="window.filterDifficulty(3, this)" class="diff-btn px-6 py-2 rounded-lg text-slate-500 hover:bg-slate-200 border border-transparent transition-all whitespace-nowrap">⭐⭐⭐</button>
+            <button onclick="window.filterDifficulty('all', this)" class="diff-btn px-6 py-2 rounded-lg text-indigo-900 bg-indigo-200 shadow-sm border border-indigo-300 transition-all">全部</button>
+            <button onclick="window.filterDifficulty(1, this)" class="diff-btn px-6 py-2 rounded-lg text-slate-500 hover:bg-slate-200 border border-transparent transition-all">⭐</button>
+            <button onclick="window.filterDifficulty(2, this)" class="diff-btn px-6 py-2 rounded-lg text-slate-500 hover:bg-slate-200 border border-transparent transition-all">⭐⭐</button>
+            <button onclick="window.filterDifficulty(3, this)" class="diff-btn px-6 py-2 rounded-lg text-slate-500 hover:bg-slate-200 border border-transparent transition-all">⭐⭐⭐</button>
         </div>
 
         <!-- 橫向詞語列表 -->
@@ -101,6 +101,9 @@
             </div>
             
             <div class="flex gap-4 items-center">
+                <div id="combo-badge" class="hidden font-black text-white bg-gradient-to-r from-rose-500 to-orange-500 px-5 py-2 rounded-xl shadow-md transform rotate-2 z-50 text-lg border-2 border-white">
+                    🔥 <span id="combo-count">2</span> 連擊！
+                </div>
                 <!-- 手機版遞交按鈕 -->
                 <button onclick="window.openSubmitModal()" class="md:hidden bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-xl font-bold shadow-md transition-colors flex items-center gap-2">
                     📥 遞交
@@ -126,8 +129,12 @@
             
             <!-- 【字】 文字 -->
             <div class="w-full flex flex-col items-center relative mt-6">
-                <div class="absolute -top-5 flex justify-center w-full z-10">
+                <!-- 標題與主要詞語朗讀按鈕 -->
+                <div class="absolute -top-5 flex justify-center items-center w-full z-10 gap-3">
                     <span class="badge-element badge-yin text-base shadow-sm">🔡 【字】結構觀察</span>
+                    <button onclick="window.speakText(window.currentWordData.word, event)" class="tts-btn flex items-center justify-center bg-white border-2 border-indigo-200 text-indigo-700 px-3 py-1 rounded-full font-bold shadow-sm text-sm hover:bg-indigo-50 gap-1">
+                        🗣️ 讀出詞語
+                    </button>
                 </div>
                 <div id="word-display" class="flex justify-center flex-wrap gap-4 md:gap-8 bg-white p-6 md:p-8 rounded-3xl border-2 border-slate-200 shadow-sm pt-12 w-full">
                     <!-- JS 生成 -->
@@ -188,7 +195,9 @@
                             <span class="bg-amber-300 text-amber-900 px-3 py-1 rounded-full font-bold text-sm shadow-sm">⭐ +3</span>
                         </div>
                         <p class="text-center font-bold text-rose-800/80 text-base md:text-lg mb-2">哪一個才是正確的字？</p>
+                        
                         <div class="flex justify-center gap-6 md:gap-8" id="twin-buttons-container"></div>
+                        
                         <div id="twin-explanation" class="hidden mt-4 bg-white rounded-2xl border border-rose-200 p-4 text-rose-900 font-bold text-sm md:text-base flex items-start md:items-center gap-3 shadow-sm mx-auto w-full max-w-md"></div>
                     </div>
                 </div>
@@ -207,33 +216,42 @@
                     <div class="flex-1 flex flex-col gap-4">
                         <div class="flex items-center gap-2 border-b-2 border-teal-100 pb-2 flex-wrap">
                             <h2 class="text-xl md:text-2xl font-bold text-teal-900">📚 詞語小辭典</h2>
+                            <button onclick="window.speakText(window.currentWordData.wordExplanation, event)" class="tts-btn w-8 h-8 rounded-full bg-teal-100 text-teal-700 shadow-sm flex items-center justify-center text-sm">🗣️</button>
                             <span id="word-english" class="bg-slate-100 text-slate-600 px-2 py-1 rounded-md text-xs md:text-sm font-bold ml-2 font-mono tracking-wider shadow-sm"></span>
                         </div>
                         <div id="word-explanation" class="text-lg md:text-xl text-slate-700 leading-relaxed font-medium mt-2"></div>
                         
                         <!-- ⚡ 思考挑戰 -->
-                        <div class="mt-auto bg-amber-50 border border-amber-200 p-4 rounded-xl flex flex-col gap-2 shadow-inner">
-                            <span class="text-amber-700 font-bold flex items-center gap-2"><span>⚡</span> 腦力激盪 (進階思考)</span>
+                        <div class="mt-auto bg-amber-50 border border-amber-200 p-4 rounded-xl flex flex-col gap-3 shadow-inner">
+                            <div class="flex items-center justify-between">
+                                <span class="text-amber-700 font-bold flex items-center gap-2"><span>⚡</span> 腦力激盪 (進階思考)</span>
+                                <button onclick="window.speakText(window.currentWordData.thinkChallenge, event)" class="tts-btn w-8 h-8 rounded-full bg-amber-200 text-amber-800 shadow-sm flex items-center justify-center text-sm">🗣️</button>
+                            </div>
                             <span id="think-challenge" class="text-amber-900 font-medium text-base md:text-lg"></span>
                         </div>
                     </div>
 
                     <!-- 詞語學習秘笈 -->
                     <div class="flex-1 bg-slate-50 border border-slate-200 rounded-2xl p-5 md:p-6 flex flex-col gap-5">
-                        <div class="flex items-center justify-between">
+                        <div class="flex items-center justify-between border-b border-slate-200 pb-2">
                             <h2 class="text-lg md:text-xl font-black text-slate-800 flex items-center gap-2"><span>🔮</span> 詞語學習秘笈</h2>
-                            <button onclick="window.playSecretGuideTTS(event)" class="tts-btn w-8 h-8 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center">🗣️</button>
                         </div>
 
                         <!-- 秘笈 1: 積木拼 -->
                         <div>
-                            <h3 class="text-sm md:text-base font-bold text-indigo-700 mb-2 flex items-center gap-2"><span>🧩</span> 把字當積木拼</h3>
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="text-sm md:text-base font-bold text-indigo-700 flex items-center gap-2"><span>🧩</span> 把字當積木拼</h3>
+                                <button onclick="window.playBlockTTS(event)" class="tts-btn w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center shadow-sm">🗣️</button>
+                            </div>
                             <div class="bg-white p-3 rounded-lg border border-slate-200 flex items-center gap-2 text-lg md:text-xl font-bold flex-wrap" id="block-combine-display"></div>
                         </div>
 
                         <!-- 秘笈 2: 百搭公式 -->
                         <div>
-                            <h3 class="text-sm md:text-base font-bold text-emerald-700 mb-2 flex items-center gap-2"><span>🧮</span> 百搭公式 (不會用錯)</h3>
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="text-sm md:text-base font-bold text-emerald-700 flex items-center gap-2"><span>🧮</span> 百搭公式 (不會用錯)</h3>
+                                <button onclick="window.playFormulaTTS(event)" class="tts-btn w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shadow-sm">🗣️</button>
+                            </div>
                             <div class="bg-emerald-50 p-3 rounded-lg border border-emerald-100 flex flex-col gap-2">
                                 <div class="text-base md:text-lg font-bold text-emerald-900 tracking-wide" id="formula-pattern"></div>
                                 <div class="text-xs md:text-sm text-emerald-800 bg-white py-1 px-2 rounded font-medium" id="formula-example"></div>
@@ -242,7 +260,10 @@
 
                         <!-- 秘笈 3: 地雷區 -->
                         <div>
-                            <h3 class="text-sm md:text-base font-bold text-rose-700 mb-2 flex items-center gap-2"><span>💥</span> 地雷區 (防錯)</h3>
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="text-sm md:text-base font-bold text-rose-700 flex items-center gap-2"><span>💥</span> 地雷區 (防錯)</h3>
+                                <button onclick="window.playMinefieldTTS(event)" class="tts-btn w-8 h-8 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center shadow-sm">🗣️</button>
+                            </div>
                             <div class="bg-white p-3 md:p-4 rounded-lg border border-rose-100 flex flex-col gap-2">
                                 <div class="flex items-center gap-2 text-base md:text-lg font-bold text-slate-400">
                                     <span class="text-rose-500">❌</span><span id="minefield-wrong" class="strikethrough-red"></span>
@@ -424,7 +445,7 @@
                 window.speechSynthesis.cancel(); 
                 const cleanText = text.replace(/<[^>]*>?/gm, '').replace(/\[|\]/g, '').replace(/【|】/g, '').replace(/_/g, '什麼').replace(/❌|⚠️|✅|👯|👀|📚|📘|🧩|🧮|💥/g, ''); 
                 const utterance = new SpeechSynthesisUtterance(cleanText);
-                utterance.lang = 'zh-TW'; utterance.rate = 0.85; window.speechSynthesis.speak(utterance);
+                utterance.lang = 'zh-HK'; utterance.rate = 0.85; window.speechSynthesis.speak(utterance);
             }
         };
 
@@ -448,7 +469,6 @@
             p.currentScore += points;
             window.addScore(points); 
             
-            // 防呆優化：只精準更新該詞語的進度徽章，不重新渲染整個列表，防止滾動條跳掉
             const badge = document.getElementById(`word-badge-${window.currentWordIndex}`);
             if (badge) {
                 const max = window.wordMaxScores[window.currentWordIndex];
@@ -456,7 +476,6 @@
                 if (p.currentScore === max) {
                     badge.className = "text-[10px] font-bold px-2 py-0.5 rounded-full transition-colors bg-emerald-100 text-emerald-700";
                 } else {
-                    // 加入閃爍動畫讓學生知道有加分
                     badge.classList.add('pop');
                     setTimeout(() => badge.classList.remove('pop'), 300);
                 }
@@ -537,7 +556,7 @@
                 fillInGame: { sentence: "李白是中國歷史上____的詩人。", options: ["著名", "巍然", "踉蹌"], correct: "著名" }
             },
             {
-                word: "神態各異", wordEnglish: "Diverse (expressions)", difficulty: 3, introVisual: "🎭🤔",
+                word: "神態各異", wordEnglish: "Diverse", difficulty: 3, introVisual: "🎭🤔",
                 introContext: "這群雕像有的在笑，有的很嚴肅，每一個的表情都不一樣。",
                 introQuestion: "形容表情和姿態各自不同，叫什麼？",
                 wordExplanation: "神情和姿態各自不同。",
@@ -697,7 +716,7 @@
                 fillInGame: { sentence: "即使訓練很辛苦，他依然____地撐了下來。", options: ["堅毅", "粗獷", "神態各異"], correct: "堅毅" }
             },
             {
-                word: "建築", wordEnglish: "Building / Architecture", difficulty: 1, introVisual: "🏢🏗️",
+                word: "建築", wordEnglish: "Building", difficulty: 1, introVisual: "🏢🏗️",
                 introContext: "工人們正在蓋一棟很高很高的大樓。",
                 introQuestion: "建造房屋或橋樑的工作，或蓋好的實體物叫什麼？",
                 wordExplanation: "建造房屋、橋樑等；或指這些建造出來的實體物。",
@@ -765,7 +784,7 @@
                 fillInGame: { sentence: "他踩到香蕉皮，腳步____，差點摔倒。", options: ["踉蹌", "著名", "威嚴"], correct: "踉蹌" }
             },
             {
-                word: "風馳電掣", wordEnglish: "Fast (like wind and lightning)", difficulty: 3, introVisual: "🏎️⚡",
+                word: "風馳電掣", wordEnglish: "Fast", difficulty: 3, introVisual: "🏎️⚡",
                 introContext: "跑車在賽道上咻一聲就過去了，快得連影子都看不清。",
                 introQuestion: "形容速度非常快，像風吹和閃電一樣，怎麼說？",
                 wordExplanation: "形容速度非常快，像風吹和閃電一樣。",
@@ -789,7 +808,7 @@
                 fillInGame: { sentence: "高鐵列車____地駛入車站。", options: ["風馳電掣", "神態各異", "艱苦奮鬥"], correct: "風馳電掣" }
             },
             {
-                word: "威嚴", wordEnglish: "Majestic / Awe-inspiring", difficulty: 2, introVisual: "🦁👑",
+                word: "威嚴", wordEnglish: "Majestic", difficulty: 2, introVisual: "🦁👑",
                 introContext: "國王坐在寶座上，表情很嚴肅，讓大家都不敢亂動。",
                 introQuestion: "形容有威風、尊嚴，令人敬畏，怎麼說？",
                 wordExplanation: "有威風、尊嚴，令人敬畏。",
@@ -834,28 +853,30 @@
             }
         ];
 
-        // ==========================================
-        // 初始化與渲染
-        // ==========================================
         window.onload = function() {
-            window.maxScore = 0;
+            // 初始化進度追蹤
             window.wordDatabase.forEach((data, index) => {
                 let max = 0;
                 let charProgress = [];
                 data.chars.forEach(c => {
-                    max += 4; // radical + write
-                    if (c.twinGame) max += 3;
-                    charProgress.push({ radical: false, write: false, twin: false });
+                    max += 4; // radical (2) + write (2)
+                    let hasTwin = !!c.twinGame;
+                    if (hasTwin) max += 3;
+                    charProgress.push({ radical: false, write: false, twin: false, hasTwin: hasTwin });
                 });
-                max += 16; // sysnonym+context+fillin+unscramble
+                max += 16; // synonym(3) + context(3) + fillin(5) + unscramble(5)
                 window.wordMaxScores[index] = max;
                 window.userProgress[index] = {
                     chars: charProgress,
-                    synonym: false, context: false, fillin: false, unscramble: false,
+                    synonym: false,
+                    context: false,
+                    fillin: false,
+                    unscramble: false,
                     currentScore: 0
                 };
             });
 
+            // 計算滿分
             window.maxScore = Object.values(window.wordMaxScores).reduce((a, b) => a + b, 0);
             document.getElementById('max-score-display').textContent = window.maxScore;
             document.getElementById('modal-max-score').textContent = window.maxScore;
@@ -866,13 +887,7 @@
             }
         };
 
-        window.filterDifficulty = function(level, btnElem) {
-            window.playSound('pop'); window.currentFilter = level;
-            document.querySelectorAll('.diff-btn').forEach(b => b.className = "diff-btn px-6 py-2 rounded-lg text-slate-500 hover:bg-slate-200 border border-transparent transition-all whitespace-nowrap");
-            btnElem.className = "diff-btn px-6 py-2 rounded-lg text-indigo-900 bg-indigo-200 shadow-sm border border-indigo-300 transition-all whitespace-nowrap";
-            window.renderWordList(level);
-        };
-
+        // --- 左側清單渲染 (加入分數與完成狀態) ---
         window.renderWordList = function(level) {
             const list = document.getElementById('word-list');
             list.innerHTML = '';
@@ -906,6 +921,13 @@
             });
         };
 
+        window.filterDifficulty = function(level, btnElem) {
+            window.playSound('pop'); window.currentFilter = level;
+            document.querySelectorAll('.diff-btn').forEach(b => b.className = "diff-btn px-6 py-2 rounded-lg text-slate-500 hover:bg-slate-200 border border-transparent transition-all whitespace-nowrap");
+            btnElem.className = "diff-btn px-6 py-2 rounded-lg text-indigo-900 bg-indigo-200 shadow-sm border border-indigo-300 transition-all whitespace-nowrap";
+            window.renderWordList(level);
+        };
+
         window.selectWord = function(index, btnElem) {
             window.playSound('pop');
             window.currentWordIndex = index;
@@ -932,6 +954,7 @@
             document.getElementById('intro-section').classList.add('hidden');
             document.getElementById('learning-section').classList.remove('hidden');
             
+            // 渲染全字
             const display = document.getElementById('word-display'); display.innerHTML = '';
             window.currentWordData.chars.forEach((charData, idx) => {
                 const btn = document.createElement('button');
@@ -941,6 +964,7 @@
                 display.appendChild(btn);
             });
 
+            // 字典與思考區
             document.getElementById('word-english').textContent = `ENG: ${window.currentWordData.wordEnglish}`;
             document.getElementById('word-explanation').innerHTML = window.currentWordData.wordExplanation;
             document.getElementById('think-challenge').innerHTML = window.currentWordData.thinkChallenge;
@@ -1128,11 +1152,21 @@
             document.getElementById('minefield-reason').textContent = secret.minefield.reason;
         };
 
-        window.playSecretGuideTTS = function(e) {
+        window.playBlockTTS = function(e) {
             const secret = window.currentWordData.secret;
-            const text = `積木拼：${secret.blocks.join('加')}等於${window.currentWordData.word}。` +
-                         `百搭公式：${secret.formula.pattern}。${secret.formula.example}。` +
-                         `地雷區：不要說 ${secret.minefield.wrong}。${secret.minefield.reason}`;
+            const text = `把字當積木拼：${secret.blocks.join('加')}等於${window.currentWordData.word}。`;
+            window.speakText(text, e);
+        };
+
+        window.playFormulaTTS = function(e) {
+            const secret = window.currentWordData.secret;
+            const text = `百搭公式：${secret.formula.pattern}。${secret.formula.example}`;
+            window.speakText(text, e);
+        };
+
+        window.playMinefieldTTS = function(e) {
+            const secret = window.currentWordData.secret;
+            const text = `地雷區防錯：不要說 ${secret.minefield.wrong}。${secret.minefield.reason}`;
             window.speakText(text, e);
         };
 
@@ -1310,7 +1344,6 @@
             }
         };
 
-        // --- 拖拉方格版 邏輯重組 ---
         window.handleDragStart = function(e, poolIdx) {
             e.dataTransfer.setData('text/plain', poolIdx);
         };
@@ -1518,7 +1551,7 @@
             const GAS_URL = "https://script.google.com/macros/s/AKfycbzMSrG9ZwzDDlKnVS-iYz3L39-q66Zh1Lqy0TVYp-GN3q-GBUsHb883QYI1lNcBqc-p/exec"; 
             
             const payload = {
-                timestamp: new Date().toLocaleString('zh-TW', {timeZone: 'Asia/Hong_Kong'}),
+                timestamp: new Date().toLocaleString('zh-HK', {timeZone: 'Asia/Hong_Kong'}),
                 assignment: "中二單元七 秦陵兵馬俑 字詞",
                 class: sClass,
                 number: sNum,
